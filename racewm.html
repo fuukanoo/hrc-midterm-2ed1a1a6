@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RaceWM 図解</title>
+<style>
+:root{--ink:#1b1f24;--sub:#5a6470;--line:#d9dee4;--bg:#fbfbfa;--card:#ffffff;--navy:#37628d;--navy2:#9fb6cc;--orange:#d37827;--soft:#eef3f8;--grey:#9aa5b1;--teal:#3f9a8a;--purple:#8a73b8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#e8ebee;--sub:#a8b2bd;--line:#3a4048;--bg:#16191d;--card:#1e2227;--navy:#7fa7d1;--navy2:#4d6a88;--orange:#e9a060;--soft:#232a33;--grey:#7d8792}}
+:root[data-theme="dark"]{--ink:#e8ebee;--sub:#a8b2bd;--line:#3a4048;--bg:#16191d;--card:#1e2227;--navy:#7fa7d1;--navy2:#4d6a88;--orange:#e9a060;--soft:#232a33;--grey:#7d8792}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Yu Gothic","YuGothic","Noto Sans CJK JP","Hiragino Sans",sans-serif;line-height:1.8;font-size:16px}
+main{max-width:860px;margin:0 auto;padding:36px 16px 80px}
+h1{font-size:30px;margin:0 0 4px;color:var(--navy)}
+.lead{color:var(--sub);margin:0 0 22px;font-size:15px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 18px;margin-bottom:28px;font-size:15px}
+nav ol{margin:2px 0 0;padding-left:22px;columns:2}
+nav a{color:var(--ink);text-decoration:none}nav a:hover{color:var(--navy)}
+section{margin:44px 0}
+h2{font-size:22px;color:var(--navy);border-bottom:2px solid var(--line);padding-bottom:4px;margin:0 0 10px}
+h2 small{font-size:13px;color:var(--sub);font-weight:400;margin-left:8px}
+.key{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:8px;padding:10px 16px;margin:10px 0 14px;font-weight:700}
+.fig{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin:10px 0}
+.fig svg{width:100%;height:auto;display:block}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.part{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.part h3{margin:0 0 4px;font-size:16px;color:var(--navy)}
+.part p{margin:4px 0 0;font-size:14.5px}
+.part svg{width:100%;height:auto;display:block;margin-top:6px}
+details{background:var(--soft);border-radius:8px;padding:8px 14px;margin:8px 0}
+summary{cursor:pointer;font-weight:700}
+details p{margin:6px 0 2px;font-size:15px}
+ul{padding-left:22px;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);white-space:nowrap}
+code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:13px}
+.small{font-size:13px;color:var(--sub)}
+.eq{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:17px;overflow-x:auto;white-space:nowrap}
+.eq i{font-style:italic}.eq .c{font-family:inherit;font-size:13px;color:var(--sub);margin-left:10px;font-style:normal}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;padding:14px}
+.fb{flex:1 1 210px;border-radius:10px;padding:8px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:88px}
+.fb .lb{font-size:13px;font-weight:700;margin-bottom:4px}.fb math{font-size:1.12em}
+.fb.n{background:var(--navy);color:#fff}.fb.s{background:var(--soft)}.fb.w{background:var(--card);border:2px solid var(--navy)}.fb.o{background:var(--orange);color:#fff}
+.arw{align-self:center;color:var(--navy);font-size:22px;font-weight:700}
+.eqm{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 14px;margin:8px 0;overflow-x:auto}
+.eqm math{font-size:1.15em}.eqm .c{font-size:13px;color:var(--sub);display:block;text-align:center;margin-top:2px}
+.sym td:first-child{white-space:nowrap;text-align:center}
+.fx{background:var(--card);border:1.5px solid var(--orange);border-radius:8px;padding:4px 8px;text-align:center;font-size:15px;color:var(--ink);box-sizing:border-box;height:100%;display:flex;align-items:center;justify-content:center}
+.fx math{font-size:1.1em;math-style:normal}
+.fxw{border-color:var(--line)}
+svg text{fill:var(--ink);font-family:inherit}
+.tN{fill:var(--navy)}.tO{fill:var(--orange)}.tS{fill:var(--sub)}.tW{fill:#fff}
+.fN{fill:var(--navy)}.fN2{fill:var(--navy2)}.fO{fill:var(--orange)}.fG{fill:var(--grey)}.fS{fill:var(--soft)}.fC{fill:var(--card)}.fT{fill:var(--teal)}.fP{fill:var(--purple)}
+.sN{stroke:var(--navy)}.sN2{stroke:var(--navy2)}.sO{stroke:var(--orange)}.sG{stroke:var(--grey)}.sL{stroke:var(--line)}.sT{stroke:var(--teal)}
+.ar{fill:none;stroke-width:2.5}
+@media (max-width:640px){.parts{grid-template-columns:1fr}nav ol{columns:1}}
+</style>
+</head>
+<body>
+<main>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="aN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="fN"/></marker>
+<marker id="aO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="fO"/></marker>
+<marker id="aG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="fG"/></marker>
+</defs></svg>
+
+<h1>RaceWM 図解</h1>
+<p class="lead">提案手法 RaceWM を、図で一発でつかむための資料。前から順に読むと「何を予測するか → 何を入れるか → どう計算し、どう学ぶか → 何と比べ、どう評価したか → どう使うか」が積み上がる。質問を受けて育てていく。<br>
+根拠はコードと評価の記録（<code>docs/knowledge/R38_racewm_ai_complete_reference.md</code>）。データの値は載せない。</p>
+
+<nav><b>目次</b><ol start="0"><li><a href="#c0">一枚でわかる RaceWM</a></li><li><a href="#c1">何を描くのか</a></li><li><a href="#c2">入力：何を使うか</a></li><li><a href="#c3">モデルの仕組み</a></li><li><a href="#c4">学習の仕方</a></li><li><a href="#c5">勝つ確率と展開の選び直し</a></li><li><a href="#c6">ST（比較相手）との違い</a></li><li><a href="#c7">コーナーごとの描き直し</a></li><li><a href="#c8">評価：2 つの物差し</a></li><li><a href="#c9">ゲームでの使い方と今後</a></li><li><a href="#c10">用語ミニ辞典</a></li></ol></nav>
+
+<!-- 0 -->
+<section id="c0">
+<h2>0. 一枚でわかる RaceWM</h2>
+<div class="key">出走表・過去走・オッズから、全馬の「コーナーごとの順位とタイム」を、乱数を変えて何通りも描く。</div>
+<div class="fig"><svg viewBox="0 0 800 250" role="img" aria-label="入力から読む、乱数を入れて描く、展開を何通りも出す流れ">
+  <rect x="10" y="40" width="130" height="150" rx="10" class="fS"/>
+  <text x="75" y="70" text-anchor="middle" font-size="16" font-weight="700">入力</text>
+  <text x="75" y="102" text-anchor="middle" font-size="14">出走表</text>
+  <text x="75" y="126" text-anchor="middle" font-size="14">過去 12 走</text>
+  <text x="75" y="150" text-anchor="middle" font-size="14">オッズ</text>
+  <text x="75" y="174" text-anchor="middle" font-size="14" class="tO">分かった順位</text>
+  <line x1="145" y1="115" x2="190" y2="115" class="ar sN" marker-end="url(#aN)"/>
+  <rect x="195" y="60" width="150" height="110" rx="12" class="fN"/>
+  <text x="270" y="105" text-anchor="middle" font-size="17" font-weight="700" class="tW">読む</text>
+  <text x="270" y="130" text-anchor="middle" font-size="13" class="tW">馬どうしを見比べる</text>
+  <line x1="350" y1="115" x2="410" y2="115" class="ar sN" marker-end="url(#aN)"/>
+  <rect x="352" y="8" width="44" height="44" rx="9" class="fC sN" stroke-width="2"/>
+  <circle cx="364" cy="20" r="4" class="fN"/><circle cx="384" cy="20" r="4" class="fN"/><circle cx="374" cy="30" r="4" class="fN"/><circle cx="364" cy="40" r="4" class="fN"/><circle cx="384" cy="40" r="4" class="fN"/>
+  <text x="408" y="35" font-size="14" class="tS">乱数</text>
+  <line x1="374" y1="54" x2="400" y2="106" class="ar sN" stroke-dasharray="5 4" marker-end="url(#aN)"/>
+  <rect x="415" y="60" width="150" height="110" rx="12" class="fN"/>
+  <text x="490" y="105" text-anchor="middle" font-size="17" font-weight="700" class="tW">描く</text>
+  <text x="490" y="130" text-anchor="middle" font-size="13" class="tW">1 回の計算で全馬</text>
+  <line x1="570" y1="115" x2="612" y2="115" class="ar sN" marker-end="url(#aN)"/>
+  <rect x="640" y="30" width="140" height="80" rx="6" class="fC sL" stroke-width="1.5"/>
+  <rect x="630" y="40" width="140" height="80" rx="6" class="fC sL" stroke-width="1.5"/>
+  <rect x="620" y="50" width="140" height="80" rx="6" class="fC sN" stroke-width="2"/>
+  <polyline points="630,110 660,95 690,90 720,75 750,70" class="ar sN"/>
+  <polyline points="630,75 660,85 690,100 720,105 750,95" class="ar sO"/>
+  <polyline points="630,95 660,75 690,80 720,90 750,115" class="ar sT"/>
+  <text x="690" y="160" text-anchor="middle" font-size="15" font-weight="700">展開を何通りも</text>
+  <line x1="690" y1="170" x2="690" y2="198" class="ar sO" marker-end="url(#aO)"/>
+  <text x="690" y="228" text-anchor="middle" font-size="15" class="tO" font-weight="700">勝つ確率・順位の予測</text>
+</svg></div>
+<p class="small">名前：Race（レース）＋ WM（World Model＝世界モデル）。ゲームでは、プレイヤーの操作で変わった順位を受けて先を描き直す「レースの世界」として働く。</p>
+</section>
+
+<!-- 1 -->
+<section id="c1">
+<h2>1. 何を描くのか <small>スライド 1〜2 枚目</small></h2>
+<div class="key">1 頭につき 6 つの値：1〜4 角の位置、走破タイム、上がり。どれも連続値。</div>
+<div class="fig"><svg viewBox="0 0 800 210" role="img" aria-label="コーナーごとの位置と、走破タイム＝前半＋上がり">
+  <path d="M60,150 H520" class="sL" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <g font-size="14" text-anchor="middle">
+    <circle cx="120" cy="150" r="13" class="fN"/><text x="120" y="155" class="tW">1</text><text x="120" y="190">1角</text>
+    <circle cx="220" cy="150" r="13" class="fN"/><text x="220" y="155" class="tW">2</text><text x="220" y="190">2角</text>
+    <circle cx="320" cy="150" r="13" class="fN"/><text x="320" y="155" class="tW">3</text><text x="320" y="190">3角</text>
+    <circle cx="420" cy="150" r="13" class="fN"/><text x="420" y="155" class="tW">4</text><text x="420" y="190">4角</text>
+    <rect x="505" y="132" width="10" height="36" class="fO"/><text x="510" y="190">ゴール</text>
+  </g>
+  <text x="270" y="118" text-anchor="middle" font-size="14" class="tS">各コーナーで何番手か（位置）</text>
+  <path d="M570,70 V58 H780 V70" fill="none" class="sG" stroke-width="2"/>
+  <text x="675" y="50" text-anchor="middle" font-size="14">走破タイム</text>
+  <rect x="570" y="78" width="140" height="36" rx="4" class="fN2"/>
+  <rect x="712" y="78" width="68" height="36" rx="4" class="fN"/>
+  <text x="640" y="102" text-anchor="middle" font-size="14" class="tW" font-weight="700">前半</text>
+  <text x="746" y="102" text-anchor="middle" font-size="14" class="tW" font-weight="700">上がり</text>
+  <text x="746" y="138" text-anchor="middle" font-size="13" class="tS">最後の 600m</text>
+  <text x="675" y="175" text-anchor="middle" font-size="15">走破 ＝ 前半 ＋ 上がり</text>
+</svg></div>
+<ul>
+<li>競馬のデータに細かい位置の記録はない。<b>通過順位は全レースに残っている</b>ので、それを軌跡にする。</li>
+<li>順位は、出した連続値を<b>馬どうしで並べ替えて</b>決める。着順＝走破タイムの速い順。</li>
+</ul>
+<details><summary>Q. 「上がり」って何？</summary>
+<p>最後の 600m（3 ハロン）を何秒で走ったか。小さいほど最後に速い（末脚）。走破タイムの一部なので、2 つはかみ合っていないとおかしい。</p></details>
+<details><summary>Q. ラップタイムは先頭の馬しかないけど、どうしている？</summary>
+<p>RaceWM では使っていない（入力にも出力にもない）。馬ごとに全レースそろっているのは「各コーナーの順位・走破タイム・上がり」だけなので、それを描く。コーナーの間の細かい動きは、ゲームのエンジンが RaceWM の計画（各コーナーの位置・走破タイム・上がり）から補って動かす。先頭のラップは、ゲームの先頭の速さの変わり方が実際のレースに似ているかを確かめる「お手本」にだけ使っている。</p></details>
+<details><summary>Q. 順位を出すなら、決まった数の型から選んでいる？</summary>
+<p>選んでいない。各値を連続値で出し、並べ替えて順位にする。乱数が連続なので、描ける展開に上限はない。</p></details>
+</section>
+
+<!-- 2 -->
+<section id="c2">
+<h2>2. 入力：何を使うか <small>スライド STEP 02</small></h2>
+<div class="key">1 頭あたり 23 個の数字と、過去 12 走。どれもレースの当日より前に分かる情報だけを使う。</div>
+<div class="parts"><div class="part"><h3>① 入力：1 頭 23 個</h3>
+    <svg viewBox="0 0 360 112">
+      <g font-size="13" text-anchor="middle">
+        <rect x="5" y="10" width="110" height="40" rx="6" class="fN2"/><text x="60" y="35" class="tW">過去走の指標 8</text>
+        <rect x="120" y="10" width="80" height="40" rx="6" class="fN"/><text x="160" y="35" class="tW">強さ 6</text>
+        <rect x="205" y="10" width="80" height="40" rx="6" class="fG"/><text x="245" y="35" class="tW">当日 6</text>
+        <rect x="290" y="10" width="65" height="40" rx="6" class="fO"/><text x="322" y="35" class="tW">市場 3</text>
+      </g>
+      <g font-size="12" class="tS"><text x="5" y="72">指標＝前に行く力・上がり・タイム・伸び・距離など</text><text x="5" y="90">強さ＝馬・騎手・調教師の推定値　当日＝年齢・斤量・馬番など</text><text x="5" y="108">市場＝最終オッズから</text></g>
+    </svg>
+    <p>ほかに過去 12 走を 1 走 8 個で。すべて当日より前の情報。</p></div></div>
+<h3>2-1. 入力を 1 つずつ</h3>
+<table>
+<tr><th>まとまり</th><th>中身</th><th>数</th></tr>
+<tr><td>過去走の指標</td><td>前に行く力（2 角の位置）／上がりの速さ／タイム／ゴール前の伸び（着順−4 角）の減衰平均（半減期 3 走）。条件差（距離・芝ダ・場・馬場・クラス・性・頭数・枠・年齢・斤量）を除いた残差。＋走った数・今回の距離・ダートか・頭数</td><td>8</td></tr>
+<tr><td>強さの推定</td><td>馬・騎手・調教師それぞれの「相手と比べた速さ」の平均と不確かさ（レースごとに更新するカルマンフィルタ、当日朝の値）</td><td>6</td></tr>
+<tr><td>当日</td><td>年齢・牝・騸・斤量（レース内で中心化）・馬番／頭数・休み明けの日数</td><td>6</td></tr>
+<tr><td>市場</td><td>最終単勝オッズ → q＝(1/オッズ) をレース内で正規化した 3 通りの変換（対数の偏差、log(q×頭数)、人気順位）</td><td>3</td></tr>
+<tr><td>過去走トークン</td><td>直近 12 走、1 走ごとに 4 指標の残差＋距離・ダート・頭数・何走前か</td><td>12×8</td></tr>
+<tr><td>分かった順位</td><td>1〜4 角ごとに（値, 分かったかの印）</td><td>4×2</td></tr>
+</table>
+<p class="small">すべて当日より前に分かる情報だけ。オッズはレース直前に分かる市場の評価で、ST にも同じものを入れている。</p>
+
+<h3>2-2. 入力の作り方：過去走の指標と強さの推定</h3>
+<div class="key">過去走は「条件のせいでない分」を、新しい走ほど重く平均。強さは「相手と比べた速さ」から毎レース更新する。</div>
+<div class="fig"><svg viewBox="0 0 800 460" role="img" aria-label="過去走の指標の作り方と、強さの推定の更新"><text x="20" y="24" font-size="15" text-anchor="start" class="tN" font-weight="700">(a) 過去走の指標</text><rect x="20" y="40" width="120" height="50" rx="8" class="fS"/><text x="80" y="62" font-size="13" text-anchor="middle" class="">実際の成績</text><text x="80" y="80" font-size="11" text-anchor="middle" class="tS">（例：上がり）</text><text x="156" y="71" font-size="22" text-anchor="middle" class="">−</text><rect x="172" y="40" width="150" height="50" rx="8" class="fS"/><text x="247" y="62" font-size="13" text-anchor="middle" class="">条件から予想</text><text x="247" y="80" font-size="11" text-anchor="middle" class="tS">距離・馬場・斤量…</text><text x="338" y="71" font-size="20" text-anchor="middle" class="">＝</text><rect x="354" y="40" width="110" height="50" rx="8" class="fO"/><text x="409" y="71" font-size="15" text-anchor="middle" class="tW" font-weight="700">残差</text><rect x="750" y="40.0" width="22" height="60.0" rx="3" class="fN"/><text x="761" y="116" font-size="11" text-anchor="middle" class="tS">今</text><rect x="720" y="52.377968440954014" width="22" height="47.622031559045986" rx="3" class="fN"/><text x="731" y="116" font-size="11" text-anchor="middle" class="tS">1</text><rect x="690" y="62.20236850315381" width="22" height="37.79763149684619" rx="3" class="fN"/><text x="701" y="116" font-size="11" text-anchor="middle" class="tS">2</text><rect x="660" y="70.0" width="22" height="30.0" rx="3" class="fN"/><text x="671" y="116" font-size="11" text-anchor="middle" class="tS">3</text><rect x="630" y="76.18898422047701" width="22" height="23.811015779522993" rx="3" class="fN"/><text x="641" y="116" font-size="11" text-anchor="middle" class="tS">4</text><rect x="600" y="81.10118425157691" width="22" height="18.898815748423097" rx="3" class="fN"/><text x="611" y="116" font-size="11" text-anchor="middle" class="tS">5</text><rect x="570" y="85.0" width="22" height="15.0" rx="3" class="fN"/><text x="581" y="116" font-size="11" text-anchor="middle" class="tS">6</text><rect x="540" y="88.0944921102385" width="22" height="11.905507889761495" rx="3" class="fN"/><text x="551" y="116" font-size="11" text-anchor="middle" class="tS">7</text><text x="645" y="30" font-size="12" text-anchor="middle" class="tS">走ごとの重み（新しいほど重い）</text><line x1="468" y1="65" x2="532" y2="65" class="ar sN" marker-end="url(#aN)"/><foreignObject x="150" y="128" width="420" height="74"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><mover><mi>s</mi><mo>¯</mo></mover><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>w</mi><mi>k</mi></msub><msub><mi>r</mi><mi>k</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>w</mi><mi>k</mi></msub><mo>+</mo><mn>2</mn></mrow></mfrac><mspace width="0.8em"/><msub><mi>w</mi><mi>k</mi></msub><mo>=</mo><msup><mn>0.5</mn><mrow><mi>k</mi><mo>/</mo><mn>3</mn></mrow></msup></math></div></foreignObject><path d="M470,150 L600,90" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="600" cy="90" r="4" class="fO"/><path d="M260,150 L409,92" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="409" cy="92" r="4" class="fO"/><text x="590" y="200" font-size="12" text-anchor="start" class="tS">＋2：走った数が少ない馬は 0 に寄せる</text><text x="20" y="198" font-size="12" text-anchor="start" class="tS">r＝残差　k＝何走前</text><text x="20" y="250" font-size="15" text-anchor="start" class="tN" font-weight="700">(b) 強さの推定（カルマンフィルタ）</text><line x1="40" y1="380" x2="780" y2="380" class="sG" stroke-width="2" marker-end="url(#aG)"/><text x="770" y="400" font-size="12" text-anchor="end" class="tS">日付</text><polyline points="37.2,374.4 39.0,374.3 40.7,374.0 42.5,373.7 44.2,373.3 46.0,372.8 47.8,372.2 49.5,371.4 51.3,370.6 53.0,369.5 54.8,368.2 56.6,366.8 58.3,365.1 60.1,363.2 61.8,361.1 63.6,358.8 65.4,356.2 67.1,353.5 68.9,350.7 70.6,347.7 72.4,344.7 74.2,341.7 75.9,338.7 77.7,335.9 79.4,333.2 81.2,330.9 83.0,328.8 84.7,327.2 86.5,326.0 88.2,325.2 90.0,325.0 91.8,325.2 93.5,326.0 95.3,327.2 97.0,328.8 98.8,330.9 100.6,333.2 102.3,335.9 104.1,338.7 105.8,341.7 107.6,344.7 109.4,347.7 111.1,350.7 112.9,353.5 114.6,356.2 116.4,358.8 118.2,361.1 119.9,363.2 121.7,365.1 123.4,366.8 125.2,368.2 127.0,369.5 128.7,370.6 130.5,371.4 132.2,372.2 134.0,372.8 135.8,373.3 137.5,373.7 139.3,374.0 141.0,374.3 142.8,374.4" fill="none" class="sN" stroke-width="2.5"/><polyline points="116.0,374.7 119.3,374.6 122.6,374.5 125.9,374.3 129.2,374.1 132.5,373.8 135.8,373.5 139.1,373.1 142.4,372.6 145.7,372.1 149.0,371.4 152.3,370.6 155.6,369.7 158.9,368.7 162.2,367.6 165.5,366.3 168.8,365.0 172.1,363.5 175.4,362.0 178.7,360.4 182.0,358.8 185.3,357.2 188.6,355.6 191.9,354.1 195.2,352.7 198.5,351.5 201.8,350.4 205.1,349.5 208.4,348.9 211.7,348.5 215.0,348.3 218.3,348.5 221.6,348.9 224.9,349.5 228.2,350.4 231.5,351.5 234.8,352.7 238.1,354.1 241.4,355.6 244.7,357.2 248.0,358.8 251.3,360.4 254.6,362.0 257.9,363.5 261.2,365.0 264.5,366.3 267.8,367.6 271.1,368.7 274.4,369.7 277.7,370.6 281.0,371.4 284.3,372.1 287.6,372.6 290.9,373.1 294.2,373.5 297.5,373.8 300.8,374.1 304.1,374.3 307.4,374.5 310.7,374.6 314.0,374.7" fill="none" class="sN" stroke-width="2.5"/><polyline points="333.8,374.4 335.3,374.1 336.9,373.9 338.4,373.5 340.0,373.1 341.5,372.5 343.0,371.8 344.6,370.9 346.1,369.9 347.7,368.7 349.2,367.3 350.7,365.6 352.3,363.7 353.8,361.5 355.4,359.1 356.9,356.4 358.4,353.6 360.0,350.5 361.5,347.2 363.1,343.8 364.6,340.3 366.1,336.9 367.7,333.5 369.2,330.3 370.8,327.3 372.3,324.6 373.8,322.3 375.4,320.4 376.9,319.0 378.5,318.1 380.0,317.9 381.5,318.1 383.1,319.0 384.6,320.4 386.2,322.3 387.7,324.6 389.2,327.3 390.8,330.3 392.3,333.5 393.9,336.9 395.4,340.3 396.9,343.8 398.5,347.2 400.0,350.5 401.6,353.6 403.1,356.4 404.6,359.1 406.2,361.5 407.7,363.7 409.3,365.6 410.8,367.3 412.3,368.7 413.9,369.9 415.4,370.9 417.0,371.8 418.5,372.5 420.0,373.1 421.6,373.5 423.1,373.9 424.7,374.1 426.2,374.4" fill="none" class="sN" stroke-width="2.5"/><polyline points="421.0,374.7 424.3,374.6 427.6,374.5 430.9,374.3 434.2,374.1 437.5,373.8 440.8,373.5 444.1,373.1 447.4,372.6 450.7,372.1 454.0,371.4 457.3,370.6 460.6,369.7 463.9,368.7 467.2,367.6 470.5,366.3 473.8,365.0 477.1,363.5 480.4,362.0 483.7,360.4 487.0,358.8 490.3,357.2 493.6,355.6 496.9,354.1 500.2,352.7 503.5,351.5 506.8,350.4 510.1,349.5 513.4,348.9 516.7,348.5 520.0,348.3 523.3,348.5 526.6,348.9 529.9,349.5 533.2,350.4 536.5,351.5 539.8,352.7 543.1,354.1 546.4,355.6 549.7,357.2 553.0,358.8 556.3,360.4 559.6,362.0 562.9,363.5 566.2,365.0 569.5,366.3 572.8,367.6 576.1,368.7 579.4,369.7 582.7,370.6 586.0,371.4 589.3,372.1 592.6,372.6 595.9,373.1 599.2,373.5 602.5,373.8 605.8,374.1 609.1,374.3 612.4,374.5 615.7,374.6 619.0,374.7" fill="none" class="sN" stroke-width="2.5"/><polyline points="633.8,374.4 635.3,374.1 636.9,373.9 638.4,373.5 640.0,373.1 641.5,372.5 643.0,371.8 644.6,370.9 646.1,369.9 647.7,368.7 649.2,367.3 650.7,365.6 652.3,363.7 653.8,361.5 655.4,359.1 656.9,356.4 658.4,353.6 660.0,350.5 661.5,347.2 663.1,343.8 664.6,340.3 666.1,336.9 667.7,333.5 669.2,330.3 670.8,327.3 672.3,324.6 673.8,322.3 675.4,320.4 676.9,319.0 678.5,318.1 680.0,317.9 681.5,318.1 683.1,319.0 684.6,320.4 686.2,322.3 687.7,324.6 689.2,327.3 690.8,330.3 692.3,333.5 693.9,336.9 695.4,340.3 696.9,343.8 698.5,347.2 700.0,350.5 701.6,353.6 703.1,356.4 704.6,359.1 706.2,361.5 707.7,363.7 709.3,365.6 710.8,367.3 712.3,368.7 713.9,369.9 715.4,370.9 717.0,371.8 718.5,372.5 720.0,373.1 721.6,373.5 723.1,373.9 724.7,374.1 726.2,374.4" fill="none" class="sN" stroke-width="2.5"/><rect x="286" y="382" width="28" height="20" rx="4" class="fO"/><text x="300" y="396" font-size="12" text-anchor="middle" class="">🏁</text><rect x="586" y="382" width="28" height="20" rx="4" class="fO"/><text x="600" y="396" font-size="12" text-anchor="middle" class="">🏁</text><text x="300" y="420" font-size="12" text-anchor="middle" class="tO">レース</text><text x="600" y="420" font-size="12" text-anchor="middle" class="tO">レース</text><foreignObject x="110" y="260" width="250" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><mi>v</mi><mo>←</mo><mi>min</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>v</mi><mo>+</mo><mi>q</mi><mo>⋅</mo><mtext>経過日数</mtext><mo>,</mo><msub><mi>v</mi><mn>0</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M220,306 L215,345" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="215" cy="345" r="4" class="fO"/><foreignObject x="420" y="260" width="270" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><mi>m</mi><mo>←</mo><mi>m</mi><mo>+</mo><mi>K</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mtext>観測</mtext><mo>−</mo><mtext>予測</mtext><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M600,306 L680,322" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="680" cy="322" r="4" class="fO"/><text x="200" y="442" font-size="12" text-anchor="middle" class="tS">走らない間：不確かさが広がる</text><text x="560" y="442" font-size="12" text-anchor="middle" class="tS">走ったあと：結果で平均を動かし、幅を縮める</text></svg></div>
+<ul><li>観測は「そのレースの他の馬と比べて 1km あたり何秒速かったか」。比べた差しか見ないので、<b>誰と走ったか</b>を通して強さがつながる。</li><li>馬・騎手・調教師の 3 つを同時に更新し、当日の朝の平均と幅（不確かさ）を入力にする。</li></ul>
+<details><summary>Q. なぜ「残差」にする？</summary><p>距離や馬場で上がりやタイムは大きく変わる。条件のせいの分を除くと、馬そのものの力だけが残り、違う条件の走りどうしを比べられる。</p></details>
+<details><summary>Q. 強さの推定の細かい設定は？</summary><p>幅の広がる速さ q、初めての馬の幅 v₀、観測のぶれなどは、2021〜2022 年で「次のレースの予測の当たりやすさ」が最大になるように決めた。当日より前のレースだけを使う。</p></details>
+
+</section>
+
+<!-- 3 -->
+<section id="c3">
+<h2>3. モデルの仕組み <small>スライド STEP 02</small></h2>
+<div class="key">① 入れる → ② 過去走をまとめる → ③ 馬どうしを見比べる → ④ 乱数 → ⑤ 6 つの値。⑥ は 4 章、⑦⑧ は 5 章。</div>
+<div class="fig"><svg viewBox="0 0 800 110" role="img" aria-label="部品①から⑤の流れ">
+  <g font-size="14" text-anchor="middle" font-weight="700">
+    <rect x="10" y="30" width="110" height="50" rx="8" class="fS"/><text x="65" y="60">① 入力</text>
+    <rect x="150" y="30" width="110" height="50" rx="8" class="fS"/><text x="205" y="60">② 過去走</text>
+    <rect x="290" y="30" width="120" height="50" rx="8" class="fN"/><text x="350" y="60" class="tW">③ 見比べる</text>
+    <rect x="440" y="30" width="90" height="50" rx="8" class="fC sN" stroke-width="2"/><text x="485" y="60" class="tN">④ 乱数</text>
+    <rect x="560" y="30" width="110" height="50" rx="8" class="fN"/><text x="615" y="60" class="tW">⑤ 6 つの値</text>
+    <rect x="700" y="30" width="90" height="50" rx="8" class="fS"/><text x="745" y="60">展開</text>
+  </g>
+  <g class="ar sN"><line x1="122" y1="55" x2="146" y2="55" marker-end="url(#aN)"/><line x1="262" y1="55" x2="286" y2="55" marker-end="url(#aN)"/><line x1="412" y1="55" x2="436" y2="55" marker-end="url(#aN)"/><line x1="532" y1="55" x2="556" y2="55" marker-end="url(#aN)"/><line x1="672" y1="55" x2="696" y2="55" marker-end="url(#aN)"/></g>
+  <text x="210" y="102" text-anchor="middle" font-size="13" class="tS">①〜③は乱数なし（同じ入力なら同じ）</text>
+</svg></div>
+<div class="parts"><div class="part"><h3>② 過去走をまとめる</h3>
+    <svg viewBox="0 0 360 110">
+      <g class="fN2"><rect x="10" y="15" width="22" height="22" rx="4"/><rect x="36" y="15" width="22" height="22" rx="4"/><rect x="62" y="15" width="22" height="22" rx="4"/><rect x="88" y="15" width="22" height="22" rx="4"/><rect x="114" y="15" width="22" height="22" rx="4"/></g>
+      <text x="146" y="31" font-size="13" class="tS">… 12 走</text>
+      <line x1="75" y1="42" x2="75" y2="62" class="ar sN" marker-end="url(#aN)"/>
+      <rect x="20" y="66" width="110" height="34" rx="6" class="fN"/><text x="75" y="88" text-anchor="middle" font-size="13" class="tW">1 走ずつ MLP</text>
+      <line x1="135" y1="83" x2="175" y2="83" class="ar sN" marker-end="url(#aN)"/>
+      <rect x="180" y="66" width="70" height="34" rx="6" class="fS"/><text x="215" y="88" text-anchor="middle" font-size="13">平均</text>
+      <line x1="255" y1="83" x2="285" y2="83" class="ar sN" marker-end="url(#aN)"/>
+      <rect x="290" y="66" width="62" height="34" rx="6" class="fO"/><text x="321" y="88" text-anchor="middle" font-size="13" class="tW">近況</text>
+    </svg>
+    <p>①とつなげて、1 頭＝64 個の数字にする。</p></div><div class="part"><h3>③ 馬どうしを見比べる（Transformer）</h3>
+    <svg viewBox="0 0 360 110">
+      <g class="sG" stroke-width="1.5">
+        <line x1="60" y1="30" x2="180" y2="20"/><line x1="60" y1="30" x2="300" y2="35"/><line x1="60" y1="30" x2="120" y2="90"/><line x1="60" y1="30" x2="240" y2="90"/>
+        <line x1="180" y1="20" x2="300" y2="35"/><line x1="180" y1="20" x2="120" y2="90"/><line x1="180" y1="20" x2="240" y2="90"/>
+        <line x1="300" y1="35" x2="120" y2="90"/><line x1="300" y1="35" x2="240" y2="90"/><line x1="120" y1="90" x2="240" y2="90"/>
+      </g>
+      <g font-size="12" text-anchor="middle"><circle cx="60" cy="30" r="15" class="fN"/><text x="60" y="34" class="tW">A</text><circle cx="180" cy="20" r="15" class="fO"/><text x="180" y="24" class="tW">B</text><circle cx="300" cy="35" r="15" class="fT"/><text x="300" y="39" class="tW">C</text><circle cx="120" cy="90" r="15" class="fP"/><text x="120" y="94" class="tW">D</text><circle cx="240" cy="90" r="15" class="fG"/><text x="240" y="94" class="tW">E</text></g>
+    </svg>
+    <p>全馬がお互いを見て「このメンバーの中の自分」を読む（3 層）。分かったコーナーの順位もここで入る。</p></div><div class="part"><h3>④ 乱数：何通りも描く元</h3>
+    <svg viewBox="0 0 360 110">
+      <rect x="20" y="20" width="44" height="44" rx="9" class="fC sN" stroke-width="2"/><circle cx="32" cy="32" r="4" class="fN"/><circle cx="52" cy="52" r="4" class="fN"/><circle cx="42" cy="42" r="4" class="fN"/>
+      <text x="42" y="88" text-anchor="middle" font-size="13">馬ごと</text><text x="42" y="105" text-anchor="middle" font-size="12" class="tS">16 個</text>
+      <rect x="110" y="20" width="44" height="44" rx="9" class="fO"/><circle cx="122" cy="32" r="4" class="fC"/><circle cx="142" cy="32" r="4" class="fC"/><circle cx="122" cy="52" r="4" class="fC"/><circle cx="142" cy="52" r="4" class="fC"/>
+      <text x="132" y="88" text-anchor="middle" font-size="13">レース共通</text><text x="132" y="105" text-anchor="middle" font-size="12" class="tS">8 個（ペースなど）</text>
+      <line x1="190" y1="42" x2="232" y2="42" class="ar sN" marker-end="url(#aN)"/>
+      <text x="242" y="38" font-size="13">引き直す</text><text x="242" y="58" font-size="13">＝ 別の展開</text>
+    </svg>
+    <p>描くたびに新しく引く。</p></div><div class="part"><h3>⑤ 6 つの値を一緒に出す</h3>
+    <svg viewBox="0 0 360 112">
+      <rect x="10" y="38" width="90" height="40" rx="8" class="fN"/><text x="55" y="63" text-anchor="middle" font-size="13" class="tW">③＋④</text>
+      <line x1="104" y1="58" x2="140" y2="58" class="ar sN" marker-end="url(#aN)"/>
+      <g font-size="11" text-anchor="middle">
+        <g class="sL" stroke-width="7" stroke-linecap="round"><line x1="160" y1="22" x2="160" y2="82"/><line x1="192" y1="22" x2="192" y2="82"/><line x1="224" y1="22" x2="224" y2="82"/><line x1="256" y1="22" x2="256" y2="82"/><line x1="288" y1="22" x2="288" y2="82"/><line x1="320" y1="22" x2="320" y2="82"/></g>
+        <g class="fN"><circle cx="160" cy="42" r="7"/><circle cx="192" cy="39" r="7"/><circle cx="224" cy="37" r="7"/><circle cx="256" cy="34" r="7"/><circle cx="288" cy="36" r="7"/><circle cx="320" cy="38" r="7"/></g>
+        <text x="160" y="102">1角</text><text x="192" y="102">2角</text><text x="224" y="102">3角</text><text x="256" y="102">4角</text><text x="288" y="102">走破</text><text x="320" y="102">上がり</text>
+      </g>
+    </svg>
+    <p>同じ乱数から 1 回で出るので<b>値どうしがかみ合う</b>。分かったコーナーは実際の値で上書き。</p></div></div>
+<h3>3-1. 式で書くと</h3>
+<div class="fig"><svg viewBox="0 0 800 560" role="img" aria-label="RaceWM の各部品と、それぞれの式を線でつないだ図"><g font-size="13" text-anchor="middle"><rect x="20" y="205" width="46" height="32" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="26" y="211" width="46" height="32" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="32" y="217" width="46" height="32" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="38" y="223" width="46" height="32" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="44" y="229" width="46" height="32" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><text x="55" y="285" class="tS">過去 12 走</text><line x1="96" y1="238" x2="128" y2="238" class="ar sN" marker-end="url(#aN)"/><rect x="134" y="212" width="86" height="52" rx="8" class="fS"/><text x="177" y="236">MLP</text><text x="177" y="254" font-size="12" class="tS">→ 平均</text><line x1="222" y1="238" x2="262" y2="238" class="ar sN" marker-end="url(#aN)"/><rect x="270" y="150" width="70" height="30" rx="6" class="fO"/><text x="305" y="170" class="tW">入力 23</text><line x1="305" y1="182" x2="305" y2="206" class="ar sN" marker-end="url(#aN)"/><rect x="268" y="212" width="74" height="52" rx="8" class="fS"/><text x="305" y="236">MLP</text><text x="305" y="254" font-size="12" class="tS">1 頭分</text><line x1="344" y1="238" x2="384" y2="238" class="ar sN" marker-end="url(#aN)"/><rect x="390" y="190" width="200" height="100" rx="12" class="fN"/><line x1="425" y1="215" x2="500" y2="208" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="425" y1="215" x2="560" y2="222" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="425" y1="215" x2="440" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="425" y1="215" x2="530" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="500" y1="208" x2="560" y2="222" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="500" y1="208" x2="440" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="500" y1="208" x2="530" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="560" y1="222" x2="440" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="560" y1="222" x2="530" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><line x1="440" y1="268" x2="530" y2="268" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><circle cx="425" cy="215" r="10" class="fO" stroke="#fff" stroke-width="1.5"/><circle cx="500" cy="208" r="10" class="fT" stroke="#fff" stroke-width="1.5"/><circle cx="560" cy="222" r="10" class="fP" stroke="#fff" stroke-width="1.5"/><circle cx="440" cy="268" r="10" class="fG" stroke="#fff" stroke-width="1.5"/><circle cx="530" cy="268" r="10" class="fN2" stroke="#fff" stroke-width="1.5"/><text x="490" y="246" class="tW" font-weight="700">Transformer</text><line x1="490" y1="292" x2="490" y2="372" class="ar sN" marker-end="url(#aN)"/><rect x="380" y="395" width="40" height="40" rx="8.0" class="fC sN" stroke-width="2"/><circle cx="390.0" cy="405.0" r="3.2" class="fN"/><circle cx="410.0" cy="405.0" r="3.2" class="fN"/><circle cx="400.0" cy="415.0" r="3.2" class="fN"/><circle cx="390.0" cy="425.0" r="3.2" class="fN"/><circle cx="410.0" cy="425.0" r="3.2" class="fN"/><text x="400" y="452" class="tS">乱数</text><line x1="424" y1="415" x2="456" y2="415" class="ar sN" marker-end="url(#aN)"/><rect x="460" y="380" width="70" height="70" rx="8" class="fN"/><text x="495" y="420" class="tW" font-weight="700">g</text><line x1="532" y1="415" x2="566" y2="415" class="ar sN" marker-end="url(#aN)"/><line x1="574" y1="388" x2="574" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="574" cy="408" r="6" class="fN"/><text x="574" y="458" font-size="11">1角</text><line x1="604" y1="388" x2="604" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="604" cy="404" r="6" class="fN"/><text x="604" y="458" font-size="11">2角</text><line x1="634" y1="388" x2="634" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="634" cy="400" r="6" class="fN"/><text x="634" y="458" font-size="11">3角</text><line x1="664" y1="388" x2="664" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="664" cy="396" r="6" class="fN"/><text x="664" y="458" font-size="11">4角</text><line x1="694" y1="388" x2="694" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="694" cy="399" r="6" class="fN"/><text x="694" y="458" font-size="11">走破</text><line x1="724" y1="388" x2="724" y2="440" class="sL" stroke-width="6" stroke-linecap="round"/><circle cx="724" cy="402" r="6" class="fN"/><text x="724" y="458" font-size="11">上がり</text><rect x="562" y="382" width="54" height="64" rx="6" fill="none" class="sO" stroke-width="2.5"/><path d="M581,382 v-12 a8,8 0 0 1 16,0 v4" fill="none" class="sO" stroke-width="2.5"/></g><foreignObject x="10" y="14" width="300" height="70"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>h</mi><mi>i</mi></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>K</mi><mi>i</mi></msub></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>K</mi><mi>i</mi></msub></munderover><mi>MLP</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M160,82 L177,212" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="177" cy="212" r="4" class="fO"/><foreignObject x="250" y="92" width="330" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>e</mi><mi>i</mi></msub><mo>=</mo><mi>MLP</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mo stretchy="false" lspace="0" rspace="0">[</mo><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><msub><mi>h</mi><mi>i</mi></msub><mo>,</mo><mi>log</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mn>1</mn><mo>+</mo><msub><mi>K</mi><mi>i</mi></msub><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub><mo stretchy="false" lspace="0" rspace="0">]</mo><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M400,138 L320,212" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="320" cy="212" r="4" class="fO"/><foreignObject x="470" y="20" width="320" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>z</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>z</mi><mi>n</mi></msub><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>=</mo><mi>Transformer</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>e</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>e</mi><mi>n</mi></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M630,66 L560,190" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="560" cy="190" r="4" class="fO"/><foreignObject x="20" y="470" width="330" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>ε</mi><mi>i</mi></msub><mo>∼</mo><mi>𝒩</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mn>0</mn><mo>,</mo><msub><mi>I</mi><mn>16</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo><mspace width="0.5em"/><mi>η</mi><mo>∼</mo><mi>𝒩</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mn>0</mn><mo>,</mo><msub><mi>I</mi><mn>8</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M300,470 L395,435" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="395" cy="435" r="4" class="fO"/><foreignObject x="360" y="494" width="250" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>=</mo><mi>g</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>,</mo><msub><mi>ε</mi><mi>i</mi></msub><mo>,</mo><mi>η</mi><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mn>6</mn></msup></math></div></foreignObject><path d="M490,494 L495,450" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="495" cy="450" r="4" class="fO"/><foreignObject x="630" y="300" width="160" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>c</mi></mrow></msub><mo>←</mo><msub><mi>y</mi><mrow><mi>i</mi><mo>,</mo><mi>c</mi></mrow></msub></math></div></foreignObject><path d="M690,346 L600,368" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="600" cy="368" r="4" class="fO"/></svg></div>
+<table class="sym">
+<tr><th>記号</th><th>意味</th></tr>
+<tr><td><math><msub><mi>x</mi><mi>i</mi></msub></math></td><td>馬 i の入力 23 個（2-1）</td></tr>
+<tr><td><math><msub><mi>r</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub></math>, <math><msub><mi>K</mi><mi>i</mi></msub></math></td><td>k 走前の過去走（8 個）と、走った数（最大 12）</td></tr>
+<tr><td><math><msub><mi>v</mi><mi>i</mi></msub></math></td><td>分かった順位（4 角 ×（値, 分かったかの印））</td></tr>
+<tr><td><math><msub><mi>e</mi><mi>i</mi></msub></math>, <math><msub><mi>z</mi><mi>i</mi></msub></math></td><td>1 頭を表す 64 個の数字（見比べる前／後）</td></tr>
+<tr><td><math><msub><mi>ε</mi><mi>i</mi></msub></math>, <math><mi>η</mi></math></td><td>馬ごとの乱数 16 個／レース共通の乱数 8 個</td></tr>
+<tr><td><math><mi>g</mi></math></td><td>出力の MLP（88→128→128→6、全馬で同じ重み）</td></tr>
+<tr><td><math><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub></math></td><td>1〜4 角の順位パーセンタイル（1＝先頭）、走破タイム・上がり（レース平均との差）</td></tr>
+</table>
+<p>順位は <math><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub></math> の値を馬どうしで並べ替えて決める。</p>
+
+<h3>3-2. 馬どうしを見比べる Transformer：元の Transformer・ST との違い</h3>
+<div class="fig"><svg viewBox="0 0 800 622" role="img" aria-label="元の Transformer、ST、RaceWM の入力の単位、見比べ方、出し方、周りの情報を図で比べる"><rect x="120" y="4" width="210" height="40" rx="8" class="fG"/><text x="225.0" y="30" text-anchor="middle" font-size="16" font-weight="700" class="tW">元の Transformer</text><rect x="345" y="4" width="215" height="40" rx="8" class="fN2"/><text x="452.5" y="30" text-anchor="middle" font-size="16" font-weight="700" class="tW">ST</text><rect x="575" y="4" width="215" height="40" rx="8" class="fN"/><text x="682.5" y="30" text-anchor="middle" font-size="16" font-weight="700" class="tW">RaceWM</text><rect x="4" y="56" width="104" height="132" rx="8" class="fS"/><text x="56" y="127.0" text-anchor="middle" font-size="15" font-weight="700">単位</text><rect x="120" y="56" width="210" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="345" y="56" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="575" y="56" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="4" y="198" width="104" height="132" rx="8" class="fS"/><text x="56" y="269.0" text-anchor="middle" font-size="15" font-weight="700">見比べ方</text><rect x="120" y="198" width="210" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="345" y="198" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="575" y="198" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="4" y="340" width="104" height="132" rx="8" class="fS"/><text x="56" y="411.0" text-anchor="middle" font-size="15" font-weight="700">出し方</text><rect x="120" y="340" width="210" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="345" y="340" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="575" y="340" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="4" y="482" width="104" height="132" rx="8" class="fS"/><text x="56" y="553.0" text-anchor="middle" font-size="15" font-weight="700">周りの情報</text><rect x="120" y="482" width="210" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="345" y="482" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><rect x="575" y="482" width="215" height="132" rx="8" class="fC sL" stroke-width="1.5"/><circle cx="162" cy="80" r="10" class="fC sG" stroke-width="2"/><text x="162" y="85" text-anchor="middle" font-size="12">1</text><rect x="142" y="96" width="40" height="30" rx="5" class="fG"/><text x="162" y="116" text-anchor="middle" font-size="12" class="tW">私</text><circle cx="210" cy="80" r="10" class="fC sG" stroke-width="2"/><text x="210" y="85" text-anchor="middle" font-size="12">2</text><rect x="190" y="96" width="40" height="30" rx="5" class="fG"/><text x="210" y="116" text-anchor="middle" font-size="12" class="tW">は</text><circle cx="258" cy="80" r="10" class="fC sG" stroke-width="2"/><text x="258" y="85" text-anchor="middle" font-size="12">3</text><rect x="238" y="96" width="40" height="30" rx="5" class="fG"/><text x="258" y="116" text-anchor="middle" font-size="12" class="tW">速く</text><circle cx="306" cy="80" r="10" class="fC sG" stroke-width="2"/><text x="306" y="85" text-anchor="middle" font-size="12">4</text><rect x="286" y="96" width="40" height="30" rx="5" class="fG"/><text x="306" y="116" text-anchor="middle" font-size="12" class="tW">走る</text><text x="225.0" y="176" text-anchor="middle" font-size="13" class="tS">単語＝トークン（番号＝並び順）</text><rect x="397" y="72" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="72" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="72" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="72" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="72" width="22" height="17" rx="3" class="fN2"/><rect x="397" y="94" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="94" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="94" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="94" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="94" width="22" height="17" rx="3" class="fN2"/><rect x="397" y="116" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="116" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="116" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="116" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="116" width="22" height="17" rx="3" class="fN2"/><text x="385" y="85" text-anchor="middle" font-size="11" class="tS">A</text><text x="385" y="107" text-anchor="middle" font-size="11" class="tS">B</text><text x="385" y="129" text-anchor="middle" font-size="11" class="tS">C</text><text x="408" y="151" text-anchor="middle" font-size="10" class="tS">1角</text><text x="436" y="151" text-anchor="middle" font-size="10" class="tS">2角</text><text x="464" y="151" text-anchor="middle" font-size="10" class="tS">3角</text><text x="492" y="151" text-anchor="middle" font-size="10" class="tS">4角</text><text x="520" y="151" text-anchor="middle" font-size="10" class="tS">G</text><text x="452.5" y="176" text-anchor="middle" font-size="13" class="tS">馬 × 時点 ＝ 1 マス</text><circle cx="620" cy="94" r="15" class="fN"/><text x="620" y="99" text-anchor="middle" font-size="12" class="tW">A</text><circle cx="670" cy="120" r="15" class="fO"/><text x="670" y="125" text-anchor="middle" font-size="12" class="tW">B</text><circle cx="715" cy="88" r="15" class="fT"/><text x="715" y="93" text-anchor="middle" font-size="12" class="tW">C</text><circle cx="747" cy="126" r="15" class="fP"/><text x="747" y="131" text-anchor="middle" font-size="12" class="tW">D</text><text x="682.5" y="176" text-anchor="middle" font-size="13" class="tS">馬 1 頭＝1 トークン（並び順なし）</text><rect x="142" y="260" width="40" height="28" rx="5" class="fG"/><rect x="190" y="260" width="40" height="28" rx="5" class="fG"/><rect x="238" y="260" width="40" height="28" rx="5" class="fG"/><rect x="286" y="260" width="40" height="28" rx="5" class="fG"/><path d="M162,258 C162,220 210,220 210,258" fill="none" class="sG" stroke-width="1.6"/><path d="M210,258 C210,220 258,220 258,258" fill="none" class="sG" stroke-width="1.6"/><path d="M258,258 C258,220 306,220 306,258" fill="none" class="sG" stroke-width="1.6"/><path d="M162,258 C162,202 258,202 258,258" fill="none" class="sG" stroke-width="1.6"/><path d="M210,258 C210,202 306,202 306,258" fill="none" class="sG" stroke-width="1.6"/><path d="M162,258 C162,184 306,184 306,258" fill="none" class="sG" stroke-width="1.6"/><text x="225.0" y="318" text-anchor="middle" font-size="13" class="tS">全部の単語どうしを見比べる</text><rect x="397" y="214" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="214" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="214" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="214" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="214" width="22" height="17" rx="3" class="fN2"/><rect x="397" y="236" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="236" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="236" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="236" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="236" width="22" height="17" rx="3" class="fN2"/><rect x="397" y="258" width="22" height="17" rx="3" class="fN2"/><rect x="425" y="258" width="22" height="17" rx="3" class="fN2"/><rect x="453" y="258" width="22" height="17" rx="3" class="fN2"/><rect x="481" y="258" width="22" height="17" rx="3" class="fN2"/><rect x="509" y="258" width="22" height="17" rx="3" class="fN2"/><line x1="393" y1="244" x2="541" y2="244" class="ar sO" marker-end="url(#aO)"/><line x1="464" y1="208" x2="464" y2="290" class="ar sN" marker-end="url(#aN)"/><text x="555" y="210.0" text-anchor="end" font-size="11" class="tO">時点 →</text><text x="471" y="298" text-anchor="start" font-size="11" class="tN">馬</text><text x="452.5" y="318" text-anchor="middle" font-size="13" class="tS">時点 → と 馬 ↓ を交互に</text><line x1="625" y1="226" x2="735" y2="222" class="sG" stroke-width="1.4"/><line x1="625" y1="226" x2="645" y2="284" class="sG" stroke-width="1.4"/><line x1="625" y1="226" x2="747" y2="282" class="sG" stroke-width="1.4"/><line x1="625" y1="226" x2="685" y2="254" class="sG" stroke-width="1.4"/><line x1="735" y1="222" x2="645" y2="284" class="sG" stroke-width="1.4"/><line x1="735" y1="222" x2="747" y2="282" class="sG" stroke-width="1.4"/><line x1="735" y1="222" x2="685" y2="254" class="sG" stroke-width="1.4"/><line x1="645" y1="284" x2="747" y2="282" class="sG" stroke-width="1.4"/><line x1="645" y1="284" x2="685" y2="254" class="sG" stroke-width="1.4"/><line x1="747" y1="282" x2="685" y2="254" class="sG" stroke-width="1.4"/><circle cx="625" cy="226" r="13" class="fN"/><text x="625" y="230" text-anchor="middle" font-size="11" class="tW">A</text><circle cx="735" cy="222" r="13" class="fO"/><text x="735" y="226" text-anchor="middle" font-size="11" class="tW">B</text><circle cx="645" cy="284" r="13" class="fT"/><text x="645" y="288" text-anchor="middle" font-size="11" class="tW">C</text><circle cx="747" cy="282" r="13" class="fP"/><text x="747" y="286" text-anchor="middle" font-size="11" class="tW">D</text><circle cx="685" cy="254" r="13" class="fG"/><text x="685" y="258" text-anchor="middle" font-size="11" class="tW">E</text><text x="682.5" y="318" text-anchor="middle" font-size="13" class="tS">全馬どうしを見比べる（3 層）</text><rect x="138" y="376" width="34" height="28" rx="5" class="fG" opacity="1.0"/><line x1="174" y1="390" x2="186" y2="390" class="sG" stroke-width="2" marker-end="url(#aG)"/><rect x="188" y="376" width="34" height="28" rx="5" class="fG" opacity="0.8"/><line x1="224" y1="390" x2="236" y2="390" class="sG" stroke-width="2" marker-end="url(#aG)"/><rect x="238" y="376" width="34" height="28" rx="5" class="fG" opacity="0.6"/><line x1="274" y1="390" x2="286" y2="390" class="sG" stroke-width="2" marker-end="url(#aG)"/><rect x="288" y="376" width="34" height="28" rx="5" class="fG" opacity="0.3999999999999999"/><text x="225.0" y="460" text-anchor="middle" font-size="13" class="tS">1 語ずつ順に出す</text><rect x="357" y="362" width="16" height="16" rx="3" class="fC sL" stroke-width="1.5"/><rect x="377" y="362" width="16" height="16" rx="3" class="fC sL" stroke-width="1.5"/><rect x="397" y="362" width="16" height="16" rx="3" class="fC sL" stroke-width="1.5"/><rect x="357" y="384" width="16" height="16" rx="3" class="fC sL" stroke-width="1.5"/><rect x="377" y="384" width="16" height="16" rx="3" class="fC sO" stroke-width="2.5"/><rect x="397" y="384" width="16" height="16" rx="3" class="fC sL" stroke-width="1.5"/><text x="385" y="420" text-anchor="middle" font-size="12" class="tS">候補 6 本</text><line x1="421" y1="380" x2="445" y2="380" class="ar sG" marker-end="url(#aG)"/><rect x="453" y="354" width="11" height="11" rx="2" class="fO"/><line x1="458.5" y1="370" x2="458.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="458.5" cy="376" r="5" class="fG"/><rect x="469" y="354" width="11" height="11" rx="2" class="fO"/><line x1="474.5" y1="370" x2="474.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="474.5" cy="406" r="5" class="fG"/><rect x="485" y="354" width="11" height="11" rx="2" class="fO"/><line x1="490.5" y1="370" x2="490.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="490.5" cy="380" r="5" class="fG"/><rect x="501" y="354" width="11" height="11" rx="2" class="fO"/><line x1="506.5" y1="370" x2="506.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="506.5" cy="408" r="5" class="fG"/><rect x="517" y="354" width="11" height="11" rx="2" class="fO"/><line x1="522.5" y1="370" x2="522.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="522.5" cy="374" r="5" class="fG"/><rect x="533" y="354" width="11" height="11" rx="2" class="fO"/><line x1="538.5" y1="370" x2="538.5" y2="412" class="sL" stroke-width="5" stroke-linecap="round"/><circle cx="538.5" cy="405" r="5" class="fG"/><text x="499" y="426" text-anchor="middle" font-size="12" class="tS">値ごとにサイコロ</text><text x="452.5" y="460" text-anchor="middle" font-size="13" class="tO">値どうしがかみ合わない ✕</text><rect x="595" y="364" width="40" height="40" rx="8" class="fC sN" stroke-width="2"/><circle cx="605" cy="374" r="3.5" class="fN"/><circle cx="625" cy="374" r="3.5" class="fN"/><circle cx="615" cy="384" r="3.5" class="fN"/><circle cx="605" cy="394" r="3.5" class="fN"/><circle cx="625" cy="394" r="3.5" class="fN"/><text x="615" y="420" text-anchor="middle" font-size="12" class="tS">乱数</text><line x1="641" y1="384" x2="681" y2="384" class="ar sN" marker-end="url(#aN)"/><rect x="687" y="356" width="92" height="56" rx="6" class="fC sN" stroke-width="2"/><polyline points="695,400 717,386 741,382 771,368" class="ar sN"/><polyline points="695,372 717,380 741,394 771,398" class="ar sO"/><text x="733" y="428" text-anchor="middle" font-size="12" class="tS">全馬の展開</text><text x="682.5" y="460" text-anchor="middle" font-size="13" class="tN">1 回の計算で全体を描く ○</text><text x="225.0" y="542" text-anchor="middle" font-size="16" class="tS">なし</text><rect x="369" y="496" width="64" height="64" rx="6" class="fS"/><line x1="401" y1="496" x2="401" y2="560" class="sG" stroke-width="10"/><line x1="369" y1="528" x2="433" y2="528" class="sG" stroke-width="10"/><line x1="441" y1="528" x2="477" y2="528" class="ar sN" stroke-dasharray="5 4" marker-end="url(#aN)"/><rect x="485" y="510" width="18" height="15" rx="3" class="fN2"/><rect x="507" y="510" width="18" height="15" rx="3" class="fN2"/><rect x="529" y="510" width="18" height="15" rx="3" class="fN2"/><rect x="485" y="530" width="18" height="15" rx="3" class="fN2"/><rect x="507" y="530" width="18" height="15" rx="3" class="fN2"/><rect x="529" y="530" width="18" height="15" rx="3" class="fN2"/><text x="452.5" y="602" text-anchor="middle" font-size="13" class="tS">道路の地図も見る</text><rect x="591" y="500" width="38" height="26" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="596" y="505" width="38" height="26" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="601" y="510" width="38" height="26" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="606" y="515" width="38" height="26" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><rect x="611" y="520" width="38" height="26" rx="4" class="fN2" stroke="var(--card)" stroke-width="1.5"/><line x1="657" y1="526" x2="683" y2="526" class="ar sN" marker-end="url(#aN)"/><rect x="687" y="510" width="46" height="32" rx="6" class="fO"/><text x="710" y="532" text-anchor="middle" font-size="14" class="tW" font-weight="700">平均</text><line x1="737" y1="526" x2="759" y2="526" class="ar sN" marker-end="url(#aN)"/><circle cx="775" cy="526" r="12" class="fN"/><text x="775" y="530" text-anchor="middle" font-size="11" class="tW">A</text><text x="682.5" y="602" text-anchor="middle" font-size="13" class="tS">過去 12 走を平均 → 近況</text></svg></div><p class="small">RaceWM の Transformer：3 層・64 次元・4 ヘッド・位置の情報なし（馬番は入力の 1 つ）。</p>
+<details><summary>Q. なぜ Transformer を使う？</summary>
+<p>レースの結果は「誰と走るか」で変わる。Transformer の注意は、頭数が変わっても全馬どうしを見比べられ、馬の並べ方に結果が左右されない（集合として扱える）。</p></details>
+<details><summary>Q. なぜ ST の「馬 × 時点」をやめて「馬ごとに 1 トークン」にした？</summary>
+<p>競馬の時点は 5 つだけで、時間方向の関係は「同じ馬の 6 つの値がかみ合うか」に集約される。それは⑤で同じ乱数から一度に出せば保てる。トークンが 5 分の 1 になり、計算も軽い。</p></details>
+<details><summary>Q. なぜ候補 6 本をやめた？</summary>
+<p>候補を選んでから値ごとにぶれを足すと、値どうしがかみ合わなくなる（6 章）。乱数を入れて全体を一度に描き、エネルギースコアで学ぶと、候補の数に縛られず、つながりも学べる。</p></details>
+<details><summary>Q. 描く段階で馬どうしの駆け引きは入っている？</summary>
+<p>入っていない。馬どうしの関係は③の「描く前の状態」と④のレース共通の乱数を通してだけ。「A が前に出たから B が下がる」を描く段階で入れるのは今後の改良点。</p></details>
+<details><summary>Q. RaceWM は Transformer？世界モデル？</summary>
+<p>③で Transformer を使う生成モデル。ゲームではプレイヤーの操作で変わった順位を受けて先を描き直すので、レースの世界モデルとして働く。</p></details><details><summary>Q. どれくらいの大きさ？</summary>
+<p>約 14 万パラメータの小さなモデル。ブラウザの中だけで動く。</p></details>
+</section>
+
+<!-- 4 -->
+<section id="c4">
+<h2>4. 学習の仕方</h2>
+<div class="key">描いた展開をレース全体でまとめて採点し、見せるコーナーを混ぜて学ぶ。</div>
+<div class="parts"><div class="part"><h3>⑥ 学習：レース全体で採点</h3>
+    <svg viewBox="0 0 360 112">
+      <circle cx="90" cy="56" r="46" class="fS"/>
+      <g class="fN2"><circle cx="70" cy="40" r="6"/><circle cx="110" cy="36" r="6"/><circle cx="60" cy="72" r="6"/><circle cx="100" cy="82" r="6"/><circle cx="122" cy="60" r="6"/><circle cx="80" cy="92" r="6"/><circle cx="55" cy="54" r="6"/><circle cx="96" cy="56" r="6"/></g>
+      <text x="88" y="64" text-anchor="middle" font-size="20" class="tO">★</text>
+      <text x="160" y="36" font-size="13">● 描いた 8 本</text><text x="160" y="58" font-size="13" class="tO">★ 実際のレース</text>
+      <text x="160" y="84" font-size="12" class="tS">★のまわりに、ほどよく</text><text x="160" y="102" font-size="12" class="tS">散らばるほど良い</text>
+    </svg>
+    <p>1 頭ずつでなく<b>全馬×6 値をまとめて</b>採点（エネルギースコア）→ つじつまも覚える。</p></div></div>
+<h3>4-1. 学習の式（エネルギースコア）</h3>
+<div class="fig"><svg viewBox="0 0 800 350" role="img" aria-label="エネルギースコアの第 1 項と第 2 項を図の線に対応させる"><foreignObject x="150" y="4" width="500" height="80"><div xmlns="http://www.w3.org/1999/xhtml" class="fx fxw"><math><mi>ES</mi><mo>=</mo><mstyle mathcolor="#d37827"><mfrac><mn>1</mn><mi>k</mi></mfrac><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><mo stretchy="false">∥</mo><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><mi>y</mi><mo stretchy="false">∥</mo></mstyle><mo>−</mo><mstyle mathcolor="#37628d"><mfrac><mn>1</mn><mrow><mn>2</mn><mi>k</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>j</mi><mo>≠</mo><mi>l</mi></mrow></munder><mo stretchy="false">∥</mo><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><msub><mi>x</mi><mi>l</mi></msub><mo stretchy="false">∥</mo></mstyle></math></div></foreignObject><circle cx="400" cy="215" r="85" class="fS"/><line x1="400" y1="215" x2="345" y2="175" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="455" y2="170" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="330" y2="240" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="470" y2="250" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="390" y2="140" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="410" y2="290" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="360" y2="280" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="400" y1="215" x2="445" y2="215" class="sO" stroke-width="2" stroke-dasharray="4 3"/><line x1="345" y1="175" x2="470" y2="250" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="345" y1="175" x2="360" y2="280" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="455" y1="170" x2="330" y2="240" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="455" y1="170" x2="410" y2="290" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="330" y1="240" x2="390" y2="140" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="330" y1="240" x2="445" y2="215" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="470" y1="250" x2="360" y2="280" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="390" y1="140" x2="410" y2="290" class="sN" stroke-width="1.3" stroke-opacity=".55"/><line x1="410" y1="290" x2="445" y2="215" class="sN" stroke-width="1.3" stroke-opacity=".55"/><circle cx="345" cy="175" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="455" cy="170" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="330" cy="240" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="470" cy="250" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="390" cy="140" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="410" cy="290" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="360" cy="280" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><circle cx="445" cy="215" r="8" class="fN2" stroke="var(--card)" stroke-width="1.5"/><text x="400" y="224" text-anchor="middle" font-size="26" class="tO">★</text><path d="M300,82 L372,206" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="372" cy="206" r="4" class="fO"/><path d="M530,82 L452,180" class="sN" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="452" cy="180" r="4" class="fN"/><g font-size="14"><text x="40" y="190" class="tO" font-weight="700">★ からの距離</text><text x="40" y="212" class="tS">小さく → 実際に近づける</text><text x="560" y="190" class="tN" font-weight="700">● どうしの距離</text><text x="560" y="212" class="tS">大きく → 固まらない</text><text x="40" y="338" class="tS">● 描いた 8 本（全馬×6 値をまとめて 1 点）　★ 実際のレース</text></g></svg></div>
+<ul>
+<li><b>適正なスコア</b>（proper scoring rule）：本当の分布で描くときに期待値が最小。乱数を入れて描くモデルをこれで学ぶ方法は engression（Shen &amp; Meinshausen）と呼ばれる。</li>
+<li>レース全体を 1 本のベクトルとして測るので、値どうしのつながり（同時分布）も学習の対象になる。</li>
+<li>隠し方：35% は何も見せない、40% は途中のコーナーまで、25% はばらばら → 1 つのモデルでどの時点からでも描ける（ST の「隠し方で問題を切り替える」考え方を借りた）。</li>
+</ul>
+
+<h3>4-2. 学習のときの隠し方</h3>
+<div class="key">学習のたびに、見せるコーナーを 3 通りに変える → 1 つのモデルでレース前からも途中からも描ける。</div>
+<div class="fig"><svg viewBox="0 0 800 246" role="img" aria-label="学習のときに見せるコーナーの 3 通り"><rect x="20" y="10" width="240" height="200" rx="10" class="fS"/><text x="140" y="36" font-size="15" text-anchor="middle" class="" font-weight="700">何も見せない</text><text x="140" y="58" font-size="14" text-anchor="middle" class="tO" font-weight="700">35%</text><rect x="70" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="106" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="142" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="178" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="70" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="106" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="142" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="178" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="70" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="106" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="142" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="178" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="70" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="106" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="142" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="178" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><text x="85" y="190" font-size="11" text-anchor="middle" class="tS">1角</text><text x="121" y="190" font-size="11" text-anchor="middle" class="tS">2角</text><text x="157" y="190" font-size="11" text-anchor="middle" class="tS">3角</text><text x="193" y="190" font-size="11" text-anchor="middle" class="tS">4角</text><text x="56" y="86" font-size="11" text-anchor="middle" class="tS">A</text><text x="56" y="112" font-size="11" text-anchor="middle" class="tS">B</text><text x="56" y="138" font-size="11" text-anchor="middle" class="tS">C</text><text x="56" y="164" font-size="11" text-anchor="middle" class="tS">D</text><rect x="280" y="10" width="240" height="200" rx="10" class="fS"/><text x="400" y="36" font-size="15" text-anchor="middle" class="" font-weight="700">途中のコーナーまで</text><text x="400" y="58" font-size="14" text-anchor="middle" class="tO" font-weight="700">40%</text><rect x="330" y="72" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="366" y="72" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="402" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="438" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="330" y="98" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="366" y="98" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="402" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="438" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="330" y="124" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="366" y="124" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="402" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="438" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="330" y="150" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="366" y="150" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="402" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="438" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><text x="345" y="190" font-size="11" text-anchor="middle" class="tS">1角</text><text x="381" y="190" font-size="11" text-anchor="middle" class="tS">2角</text><text x="417" y="190" font-size="11" text-anchor="middle" class="tS">3角</text><text x="453" y="190" font-size="11" text-anchor="middle" class="tS">4角</text><text x="316" y="86" font-size="11" text-anchor="middle" class="tS">A</text><text x="316" y="112" font-size="11" text-anchor="middle" class="tS">B</text><text x="316" y="138" font-size="11" text-anchor="middle" class="tS">C</text><text x="316" y="164" font-size="11" text-anchor="middle" class="tS">D</text><rect x="540" y="10" width="240" height="200" rx="10" class="fS"/><text x="660" y="36" font-size="15" text-anchor="middle" class="" font-weight="700">ばらばらに見せる</text><text x="660" y="58" font-size="14" text-anchor="middle" class="tO" font-weight="700">25%</text><rect x="590" y="72" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="626" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="662" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="698" y="72" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="590" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="626" y="98" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="662" y="98" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="698" y="98" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="590" y="124" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="626" y="124" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><rect x="662" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="698" y="124" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="590" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="626" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="662" y="150" width="30" height="20" rx="3" class="fC" stroke="var(--line)" stroke-width="1.5"/><rect x="698" y="150" width="30" height="20" rx="3" class="fN" stroke="var(--line)" stroke-width="1.5"/><text x="605" y="190" font-size="11" text-anchor="middle" class="tS">1角</text><text x="641" y="190" font-size="11" text-anchor="middle" class="tS">2角</text><text x="677" y="190" font-size="11" text-anchor="middle" class="tS">3角</text><text x="713" y="190" font-size="11" text-anchor="middle" class="tS">4角</text><text x="576" y="86" font-size="11" text-anchor="middle" class="tS">A</text><text x="576" y="112" font-size="11" text-anchor="middle" class="tS">B</text><text x="576" y="138" font-size="11" text-anchor="middle" class="tS">C</text><text x="576" y="164" font-size="11" text-anchor="middle" class="tS">D</text><rect x="200" y="222" width="18" height="14" rx="2" class="fN"/><text x="224" y="234" font-size="12" text-anchor="start" class="tS">見せる（入力に入れ、出力も固定）</text><rect x="470" y="222" width="18" height="14" rx="2" class="fC" stroke="var(--line)" stroke-width="1.5"/><text x="494" y="234" font-size="12" text-anchor="start" class="tS">隠す（描かせる）</text></svg></div>
+<p class="small">考え方は ST の「隠し方で予測・条件付き予測などを 1 つのモデルで切り替える」を借りた。</p>
+<h3>4-3. 5 つのシードと、出力を順位に戻す手順</h3>
+<div class="fig"><svg viewBox="0 0 800 180" role="img" aria-label="5 つのシードの使い方と、出力を順位に戻す手順"><rect x="20" y="30" width="44" height="44" rx="8" class="fN" opacity="1.0"/><text x="42" y="57" font-size="13" text-anchor="middle" class="tW" font-weight="700">#1</text><rect x="72" y="30" width="44" height="44" rx="8" class="fN" opacity="0.88"/><text x="94" y="57" font-size="13" text-anchor="middle" class="tW" font-weight="700">#2</text><rect x="124" y="30" width="44" height="44" rx="8" class="fN" opacity="0.76"/><text x="146" y="57" font-size="13" text-anchor="middle" class="tW" font-weight="700">#3</text><rect x="176" y="30" width="44" height="44" rx="8" class="fN" opacity="0.64"/><text x="198" y="57" font-size="13" text-anchor="middle" class="tW" font-weight="700">#4</text><rect x="228" y="30" width="44" height="44" rx="8" class="fN" opacity="0.52"/><text x="250" y="57" font-size="13" text-anchor="middle" class="tW" font-weight="700">#5</text><text x="150" y="96" font-size="12" text-anchor="middle" class="tS">初期値だけ違う 5 つのモデル</text><rect x="20" y="120" width="22" height="22" rx="3" class="fN2"/><text x="31" y="136" font-size="11" text-anchor="middle" class="tW">1</text><rect x="46" y="120" width="22" height="22" rx="3" class="fN2"/><text x="57" y="136" font-size="11" text-anchor="middle" class="tW">2</text><rect x="72" y="120" width="22" height="22" rx="3" class="fN2"/><text x="83" y="136" font-size="11" text-anchor="middle" class="tW">3</text><rect x="98" y="120" width="22" height="22" rx="3" class="fN2"/><text x="109" y="136" font-size="11" text-anchor="middle" class="tW">4</text><rect x="124" y="120" width="22" height="22" rx="3" class="fN2"/><text x="135" y="136" font-size="11" text-anchor="middle" class="tW">5</text><rect x="150" y="120" width="22" height="22" rx="3" class="fN2"/><text x="161" y="136" font-size="11" text-anchor="middle" class="tW">1</text><rect x="176" y="120" width="22" height="22" rx="3" class="fN2"/><text x="187" y="136" font-size="11" text-anchor="middle" class="tW">2</text><rect x="202" y="120" width="22" height="22" rx="3" class="fN2"/><text x="213" y="136" font-size="11" text-anchor="middle" class="tW">3</text><rect x="228" y="120" width="22" height="22" rx="3" class="fN2"/><text x="239" y="136" font-size="11" text-anchor="middle" class="tW">4</text><rect x="254" y="120" width="22" height="22" rx="3" class="fN2"/><text x="265" y="136" font-size="11" text-anchor="middle" class="tW">5</text><text x="150" y="162" font-size="12" text-anchor="middle" class="tS">1 本ごとに交代で描く</text><rect x="330" y="60" width="84" height="56" rx="8" class="fS"/><text x="372" y="93" font-size="12" text-anchor="middle" class="">出力</text><line x1="416" y1="88" x2="422" y2="88" class="ar sN" marker-end="url(#aN)"/><rect x="422" y="60" width="84" height="56" rx="8" class="fS"/><text x="464" y="93" font-size="12" text-anchor="middle" class="">×sd＋平均</text><line x1="508" y1="88" x2="514" y2="88" class="ar sN" marker-end="url(#aN)"/><rect x="514" y="60" width="84" height="56" rx="8" class="fS"/><text x="556" y="93" font-size="12" text-anchor="middle" class="">秒・位置</text><line x1="600" y1="88" x2="606" y2="88" class="ar sN" marker-end="url(#aN)"/><rect x="606" y="60" width="84" height="56" rx="8" class="fN"/><text x="648" y="93" font-size="12" text-anchor="middle" class="tW">並べ替え</text><line x1="692" y1="88" x2="698" y2="88" class="ar sN" marker-end="url(#aN)"/><rect x="698" y="60" width="84" height="56" rx="8" class="fO"/><text x="740" y="93" font-size="12" text-anchor="middle" class="tW">順位</text><text x="560" y="140" font-size="12" text-anchor="middle" class="tS">着順＝走破タイムの速い順　コーナー順位＝位置の値の大きい順</text></svg></div>
+
+</section>
+
+<!-- 5 -->
+<section id="c5">
+<h2>5. 勝つ確率と展開の選び直し <small>スライド STEP 03・04</small></h2>
+<div class="key">勝つ確率はオッズを出発点に補正して出す。描いた展開は、その確率に合うように選び直す。</div>
+<div class="parts"><div class="part"><h3>⑦ 勝つ確率の出力部</h3>
+    <svg viewBox="0 0 360 110">
+      <rect x="10" y="30" width="80" height="40" rx="8" class="fO"/><text x="50" y="55" text-anchor="middle" font-size="13" class="tW">オッズ</text>
+      <text x="108" y="57" text-anchor="middle" font-size="20">＋</text>
+      <rect x="125" y="30" width="90" height="40" rx="8" class="fN"/><text x="170" y="55" text-anchor="middle" font-size="13" class="tW">③の補正</text>
+      <line x1="220" y1="50" x2="255" y2="50" class="ar sN" marker-end="url(#aN)"/>
+      <rect x="260" y="30" width="92" height="40" rx="8" class="fS"/><text x="306" y="55" text-anchor="middle" font-size="13">勝つ確率</text>
+      <text x="10" y="96" font-size="12" class="tS">出発点は「オッズそのまま」。段階ごとに温度で鋭さを調整</text>
+    </svg>
+    <p>本体を固定して、後から付け足した部品。</p></div><div class="part"><h3>⑧ 展開の選び直し</h3>
+    <svg viewBox="0 0 360 110">
+      <g class="fN2"><rect x="10" y="20" width="14" height="14" rx="2"/><rect x="28" y="20" width="14" height="14" rx="2"/><rect x="46" y="20" width="14" height="14" rx="2"/><rect x="64" y="20" width="14" height="14" rx="2"/><rect x="10" y="38" width="14" height="14" rx="2"/><rect x="28" y="38" width="14" height="14" rx="2"/><rect x="46" y="38" width="14" height="14" rx="2"/><rect x="64" y="38" width="14" height="14" rx="2"/></g>
+      <text x="44" y="72" text-anchor="middle" font-size="12" class="tS">描いた展開</text>
+      <line x1="92" y1="38" x2="146" y2="38" class="ar sO" marker-end="url(#aO)"/>
+      <text x="119" y="26" text-anchor="middle" font-size="12" class="tO">⑦に合わせる</text>
+      <g class="fN"><rect x="160" y="20" width="14" height="14" rx="2"/><rect x="178" y="20" width="14" height="14" rx="2"/><rect x="160" y="38" width="14" height="14" rx="2"/><rect x="196" y="38" width="14" height="14" rx="2"/></g>
+      <text x="185" y="72" text-anchor="middle" font-size="12" class="tS">選び直した展開</text>
+      <text x="10" y="98" font-size="12" class="tS">勝ち馬の割合が⑦の確率と一致（STEP 04 の比較はこちら）</text>
+    </svg>
+    <p>STEP 03 の図は、選び直す前の描いたままの展開。</p></div></div>
+<h3>5-1. 勝つ確率の出力部と温度</h3>
+<div class="key">オッズを出発点に、RaceWM が読んだ状態で補正し、温度で鋭さを合わせる。</div>
+<div class="fig"><svg viewBox="0 0 800 370" role="img" aria-label="オッズと状態から勝つ確率を出し、温度で鋭さを合わせる"><rect x="20" y="60" width="90" height="44" rx="8" class="fO"/><text x="65" y="87" font-size="14" text-anchor="middle" class="tW" font-weight="700">オッズ q</text><rect x="20" y="160" width="90" height="44" rx="8" class="fN"/><text x="65" y="187" font-size="14" text-anchor="middle" class="tW" font-weight="700">状態 z</text><line x1="112" y1="82" x2="170" y2="82" class="ar sN" marker-end="url(#aN)"/><rect x="176" y="60" width="96" height="44" rx="8" class="fS"/><text x="224" y="87" font-size="14" text-anchor="middle" class="">log ×a</text><line x1="112" y1="182" x2="170" y2="182" class="ar sN" marker-end="url(#aN)"/><rect x="176" y="160" width="96" height="44" rx="8" class="fS"/><text x="224" y="187" font-size="14" text-anchor="middle" class="">MLP g</text><circle cx="320" cy="132" r="18" class="fC sN" stroke-width="2"/><text x="320" y="138" font-size="18" text-anchor="middle" class="tN">＋</text><line x1="274" y1="86" x2="306" y2="120" class="ar sN" marker-end="url(#aN)"/><line x1="274" y1="178" x2="306" y2="144" class="ar sN" marker-end="url(#aN)"/><line x1="340" y1="132" x2="376" y2="132" class="ar sN" marker-end="url(#aN)"/><rect x="382" y="110" width="96" height="44" rx="8" class="fN"/><text x="430" y="137" font-size="14" text-anchor="middle" class="tW">softmax</text><line x1="480" y1="132" x2="516" y2="132" class="ar sN" marker-end="url(#aN)"/><rect x="522" y="110" width="90" height="44" rx="8" class="fN"/><text x="567" y="137" font-size="14" text-anchor="middle" class="tW">温度 T</text><line x1="614" y1="132" x2="650" y2="132" class="ar sN" marker-end="url(#aN)"/><rect x="660" y="110" width="20" height="50" rx="2" class="fO"/><rect x="688" y="138" width="20" height="22" rx="2" class="fO"/><rect x="716" y="146" width="20" height="14" rx="2" class="fO"/><rect x="744" y="152" width="20" height="8" rx="2" class="fO"/><text x="710" y="180" font-size="12" text-anchor="middle" class="tS">勝つ確率</text><foreignObject x="130" y="4" width="240" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>s</mi><mi>i</mi></msub><mo>=</mo><mi>a</mi><mi>log</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>q</mi><mi>i</mi></msub><mi>n</mi><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>+</mo><mi>g</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></math></div></foreignObject><path d="M250,50 L320,114" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="320" cy="114" r="4" class="fO"/><foreignObject x="360" y="190" width="200" height="70"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mfrac><msup><mi>e</mi><msub><mi>s</mi><mi>i</mi></msub></msup><mrow><munder><mo>∑</mo><mi>j</mi></munder><msup><mi>e</mi><msub><mi>s</mi><mi>j</mi></msub></msup></mrow></mfrac></math></div></foreignObject><path d="M430,190 L430,156" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="430" cy="156" r="4" class="fO"/><foreignObject x="560" y="30" width="170" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mover><mi>p</mi><mo>~</mo></mover><mi>i</mi></msub><mo>∝</mo><msubsup><mi>p</mi><mi>i</mi><mrow><mn>1</mn><mo>/</mo><mi>T</mi></mrow></msubsup></math></div></foreignObject><path d="M620,76 L567,110" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="567" cy="110" r="4" class="fO"/><text x="20" y="290" font-size="13" text-anchor="start" class="tS" font-weight="700">温度のはたらき</text><rect x="150" y="276" width="18" height="64" rx="2" class="fN2"/><rect x="174" y="322" width="18" height="18" rx="2" class="fN2"/><rect x="198" y="330" width="18" height="10" rx="2" class="fN2"/><rect x="222" y="336" width="18" height="4" rx="2" class="fN2"/><text x="190" y="358" font-size="12" text-anchor="middle" class="tS">T＜1：鋭く</text><rect x="370" y="294" width="18" height="46" rx="2" class="fN2"/><rect x="394" y="316" width="18" height="24" rx="2" class="fN2"/><rect x="418" y="322" width="18" height="18" rx="2" class="fN2"/><rect x="442" y="328" width="18" height="12" rx="2" class="fN2"/><text x="410" y="358" font-size="12" text-anchor="middle" class="tS">T＝1</text><rect x="590" y="306" width="18" height="34" rx="2" class="fN2"/><rect x="614" y="314" width="18" height="26" rx="2" class="fN2"/><rect x="638" y="318" width="18" height="22" rx="2" class="fN2"/><rect x="662" y="322" width="18" height="18" rx="2" class="fN2"/><text x="630" y="358" font-size="12" text-anchor="middle" class="tS">T＞1：なだらか</text></svg></div>
+<ul><li>学習の出発点は a＝1、g＝0 ＝「オッズそのまま」。学習で、オッズの効きを少し弱め、残りを状態 z で補う形になった。</li><li>損失は「走破タイムが一番速い馬」の確率の −log（評価の勝ち馬は公式の 1 着）。5 つのシードの確率を平均し、T はレース前・1〜4 角ごとに 2023 年後半で決める。</li></ul>
+<details><summary>Q. オッズを使ってよい？</summary><p>最終オッズはレース直前に分かる市場の評価で、レース前の予測に使える範囲。ST にも同じ出力部を付けて、同じ条件で比べている。形は競馬予測の古典（Benter 1994）と同じ系統で、ここは新しさではない。</p></details>
+<h3>5-2. 展開の選び直し（重み付け）</h3>
+<div class="key">描いた展開の勝ち馬の割合を、5-1 の勝つ確率に合わせる。展開の中身は変えず、どれを残すかだけを変える。</div>
+<div class="fig"><svg viewBox="0 0 800 210" role="img" aria-label="描いた展開の勝ち馬の割合を目標の確率に合わせて選び直す"><text x="150" y="22" font-size="13" text-anchor="middle" class="" font-weight="700">描いた 1,024 本の勝ち馬の割合</text><text x="620" y="22" font-size="13" text-anchor="middle" class="" font-weight="700">目標（5-1 の勝つ確率）</text><rect x="70" y="78.0" width="34" height="72.0" rx="3" class="fN" opacity=".8"/><text x="87" y="168" font-size="12" text-anchor="middle" class="tS">A</text><rect x="540" y="39.60000000000001" width="34" height="110.39999999999999" rx="3" class="fN"/><text x="557" y="168" font-size="12" text-anchor="middle" class="tS">A</text><rect x="114" y="68.4" width="34" height="81.6" rx="3" class="fO" opacity=".8"/><text x="131" y="168" font-size="12" text-anchor="middle" class="tS">B</text><rect x="584" y="92.4" width="34" height="57.599999999999994" rx="3" class="fO"/><text x="601" y="168" font-size="12" text-anchor="middle" class="tS">B</text><rect x="158" y="97.2" width="34" height="52.8" rx="3" class="fT" opacity=".8"/><text x="175" y="168" font-size="12" text-anchor="middle" class="tS">C</text><rect x="628" y="106.80000000000001" width="34" height="43.199999999999996" rx="3" class="fT"/><text x="645" y="168" font-size="12" text-anchor="middle" class="tS">C</text><rect x="202" y="116.4" width="34" height="33.6" rx="3" class="fP" opacity=".8"/><text x="219" y="168" font-size="12" text-anchor="middle" class="tS">D</text><rect x="672" y="121.2" width="34" height="28.799999999999997" rx="3" class="fP"/><text x="689" y="168" font-size="12" text-anchor="middle" class="tS">D</text><line x1="270" y1="100" x2="520" y2="100" class="ar sO" marker-end="url(#aO)"/><foreignObject x="300" y="30" width="200" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>w</mi><mi>j</mi></msub><mo>=</mo><mfrac><msub><mover><mi>p</mi><mo>~</mo></mover><mrow><mtext>勝ち馬</mtext><mo>(</mo><mi>j</mi><mo>)</mo></mrow></msub><msub><mover><mi>p</mi><mo>^</mo></mover><mrow><mtext>勝ち馬</mtext><mo>(</mo><mi>j</mi><mo>)</mo></mrow></msub></mfrac></math></div></foreignObject><text x="400" y="130" font-size="12" text-anchor="middle" class="tS">重みに比例して 256 本を選び直す</text><text x="400" y="196" font-size="12" text-anchor="middle" class="tS">j＝描いた展開　p̂＝描いた中で勝った割合　p̃＝目標の確率</text></svg></div>
+<p class="small">STEP 04 の比較（順位・本物らしさ）は選び直したあとの展開。STEP 03 の図は選び直す前の、描いたままの展開。</p>
+<details><summary>Q. 勝つ確率はどう出している？</summary>
+<p>2 通り。描いた展開を数える（STEP 03）か、⑦の出力部（STEP 04、ゲームの表示）。</p></details>
+</section>
+
+<!-- 6 -->
+<section id="c6">
+<h2>6. ST（比較相手）との違い <small>スライド STEP 02</small></h2>
+<div class="key">ST は「候補を選んで、値ごとに別々のサイコロ」。RaceWM は「1 つの乱数から全部を一度に」。</div>
+<div class="fig"><svg viewBox="0 0 800 300" role="img" aria-label="ST は候補 6 本から 1 本選び値ごとにサイコロ、RaceWM は乱数から 1 回の計算">
+  <rect x="10" y="10" width="120" height="125" rx="10" class="fG"/>
+  <text x="70" y="68" text-anchor="middle" font-size="16" font-weight="700" class="tW">ST</text><text x="70" y="90" text-anchor="middle" font-size="12" class="tW">代表手法</text>
+  <g class="fC sL" stroke-width="1.5"><rect x="150" y="30" width="34" height="26" rx="4"/><rect x="188" y="30" width="34" height="26" rx="4"/><rect x="226" y="30" width="34" height="26" rx="4"/><rect x="150" y="62" width="34" height="26" rx="4"/><rect x="226" y="62" width="34" height="26" rx="4"/></g>
+  <rect x="188" y="62" width="34" height="26" rx="4" class="fC sO" stroke-width="2.5"/>
+  <text x="205" y="114" text-anchor="middle" font-size="13">候補 6 本</text>
+  <line x1="270" y1="60" x2="320" y2="60" class="ar sG" marker-end="url(#aG)"/><text x="295" y="48" text-anchor="middle" font-size="12" class="tS">1 本選ぶ</text>
+  <rect x="330" y="35" width="110" height="55" rx="6" class="fC sO" stroke-width="2.5"/>
+  <text x="385" y="114" text-anchor="middle" font-size="13">選んだ 1 本</text>
+  <line x1="450" y1="60" x2="500" y2="60" class="ar sG" marker-end="url(#aG)"/><text x="475" y="48" text-anchor="middle" font-size="12" class="tS">値ごとに</text>
+  <g font-size="11" text-anchor="middle">
+    <g class="sL" stroke-width="7" stroke-linecap="round"><line x1="530" y1="40" x2="530" y2="95"/><line x1="568" y1="40" x2="568" y2="95"/><line x1="606" y1="40" x2="606" y2="95"/><line x1="644" y1="40" x2="644" y2="95"/><line x1="682" y1="40" x2="682" y2="95"/><line x1="720" y1="40" x2="720" y2="95"/></g>
+    <g class="fG"><circle cx="530" cy="48" r="7"/><circle cx="568" cy="88" r="7"/><circle cx="606" cy="52" r="7"/><circle cx="644" cy="90" r="7"/><circle cx="682" cy="46" r="7"/><circle cx="720" cy="89" r="7"/></g>
+    <g class="fO"><rect x="524" y="14" width="12" height="12" rx="2"/><rect x="562" y="14" width="12" height="12" rx="2"/><rect x="600" y="14" width="12" height="12" rx="2"/><rect x="638" y="14" width="12" height="12" rx="2"/><rect x="676" y="14" width="12" height="12" rx="2"/><rect x="714" y="14" width="12" height="12" rx="2"/></g>
+    <text x="530" y="114">1角</text><text x="568" y="114">2角</text><text x="606" y="114">3角</text><text x="644" y="114">4角</text><text x="682" y="114">走破</text><text x="720" y="114">上がり</text>
+  </g>
+  <text x="756" y="72" font-size="18" font-weight="700" class="tO">✕</text>
+  <rect x="10" y="160" width="120" height="125" rx="10" class="fN"/>
+  <text x="70" y="228" text-anchor="middle" font-size="16" font-weight="700" class="tW">RaceWM</text>
+  <rect x="180" y="190" width="50" height="50" rx="10" class="fC sN" stroke-width="2"/><circle cx="194" cy="204" r="4" class="fN"/><circle cx="216" cy="204" r="4" class="fN"/><circle cx="205" cy="215" r="4" class="fN"/><circle cx="194" cy="226" r="4" class="fN"/><circle cx="216" cy="226" r="4" class="fN"/>
+  <text x="205" y="264" text-anchor="middle" font-size="13">乱数</text>
+  <line x1="240" y1="215" x2="320" y2="215" class="ar sN" marker-end="url(#aN)"/>
+  <rect x="330" y="188" width="110" height="55" rx="10" class="fN"/><text x="385" y="221" text-anchor="middle" font-size="14" class="tW" font-weight="700">1 回の計算</text>
+  <line x1="450" y1="215" x2="500" y2="215" class="ar sN" marker-end="url(#aN)"/>
+  <g font-size="11" text-anchor="middle">
+    <g class="sL" stroke-width="7" stroke-linecap="round"><line x1="530" y1="190" x2="530" y2="245"/><line x1="568" y1="190" x2="568" y2="245"/><line x1="606" y1="190" x2="606" y2="245"/><line x1="644" y1="190" x2="644" y2="245"/><line x1="682" y1="190" x2="682" y2="245"/><line x1="720" y1="190" x2="720" y2="245"/></g>
+    <g class="fN"><circle cx="530" cy="212" r="7"/><circle cx="568" cy="208" r="7"/><circle cx="606" cy="205" r="7"/><circle cx="644" cy="201" r="7"/><circle cx="682" cy="203" r="7"/><circle cx="720" cy="206" r="7"/></g>
+    <text x="530" y="264">1角</text><text x="568" y="264">2角</text><text x="606" y="264">3角</text><text x="644" y="264">4角</text><text x="682" y="264">走破</text><text x="720" y="264">上がり</text>
+  </g>
+  <text x="756" y="222" font-size="18" font-weight="700" class="tN">○</text>
+</svg></div>
+<ul>
+<li>ST：一つ一つの値は自然でも、<b>組み合わせるとかみ合わない</b>（上がり最速なのに走破タイムが遅い、など）。</li>
+<li>RaceWM：値をばらばらに決めないので、<b>タイムと順位のつじつまが合う</b>。ゲームでは描いた展開がそのままレースになるので、ここが一番大事。</li>
+</ul>
+<details><summary>Q. ST の「6 本の候補」って具体的に何？</summary>
+<p>レースごとに ST が出す、<b>全馬まとめた展開</b>の候補 6 本と、それぞれの確率（各馬に 6 通りずつではない）。全レース共通の型ではない。</p></details>
+<details><summary>Q. 「値ごとにサイコロ」は具体的に何？</summary>
+<p>1 本描くたびに、馬 1 頭・値 1 つごとに別々の乱数を引く。1 頭 6 個、14 頭なら 84 個を互いに関係なく。</p></details>
+<details><summary>Q. ST の描き方は、私たちが勝手に決めたもの？</summary>
+<p>いいえ。「候補 6 本 × 値ごとの独立したぶれ」は元の論文の形をそのまま再現。読み替えたのは「時点＝コーナー」「主体＝出走馬」だけ。</p></details>
+<details><summary>Q. ST が競馬で使えないから RaceWM を作った？</summary>
+<p>いいえ。ST も読み替えれば使える。限界は「使えない」ではなく「描いた展開の中で値がかみ合わない」。</p></details>
+<details><summary>Q. ST はどれくらい権威ある手法？なぜ相手が ST？</summary>
+<p>ICLR 2022（機械学習の最上位の国際会議）、Google／Waymo。全馬を同時に何通りも描ける代表。LightGBM などは馬ごとに 1 つの値しか出さず、展開を描けない。最終までに新しい手法（MTR など）とも比べる。</p></details>
+</section>
+
+<!-- 7 -->
+<section id="c7">
+<h2>7. コーナーごとの描き直し <small>スライド STEP 03</small></h2>
+<div class="key">順位が分かるたびに、それを入れて残りを描き直す → 展開の束が絞られていく。</div>
+<div class="fig"><svg viewBox="0 0 800 220" role="img" aria-label="レース前、2 角まで、4 角までで展開の束が絞られる模式図">
+  <g font-size="14" text-anchor="middle" font-weight="700"><text x="130" y="22">レース前</text><text x="400" y="22">2 角まで分かった</text><text x="670" y="22">4 角まで分かった</text></g>
+  <rect x="20" y="35" width="220" height="150" rx="8" class="fC sL" stroke-width="1.5"/>
+  <g class="sN2" stroke-width="1.8" fill="none"><path d="M30,110 C90,60 150,150 230,50"/><path d="M30,110 C90,150 150,70 230,170"/><path d="M30,110 C90,100 150,120 230,110"/><path d="M30,110 C90,80 150,40 230,80"/><path d="M30,110 C90,140 150,170 230,140"/></g>
+  <rect x="290" y="35" width="220" height="150" rx="8" class="fC sL" stroke-width="1.5"/>
+  <rect x="290" y="35" width="90" height="150" rx="8" class="fS"/>
+  <path d="M300,120 L340,105 L380,95" class="sN" stroke-width="3.5" fill="none"/>
+  <g class="sN2" stroke-width="1.8" fill="none"><path d="M380,95 C420,70 460,100 500,60"/><path d="M380,95 C420,120 460,90 500,130"/><path d="M380,95 C420,95 460,110 500,95"/><path d="M380,95 C420,80 460,60 500,80"/></g>
+  <rect x="560" y="35" width="220" height="150" rx="8" class="fC sL" stroke-width="1.5"/>
+  <rect x="560" y="35" width="175" height="150" rx="8" class="fS"/>
+  <path d="M570,120 L610,105 L650,95 L690,80 L735,72" class="sN" stroke-width="3.5" fill="none"/>
+  <g class="sN2" stroke-width="1.8" fill="none"><path d="M735,72 L772,62"/><path d="M735,72 L772,80"/><path d="M735,72 L772,71"/></g>
+  <g class="ar sO"><line x1="245" y1="110" x2="285" y2="110" marker-end="url(#aO)"/><line x1="515" y1="110" x2="555" y2="110" marker-end="url(#aO)"/></g>
+  <text x="400" y="210" text-anchor="middle" font-size="13" class="tS">太線＝分かった順位　細線＝描いた展開（説明用の模式図）</text>
+</svg></div>
+<ul>
+<li>描いた展開のうち<b>各馬が 1 着になった割合</b>＝その時点の勝つ確率。分かるほど、実際の勝ち馬の割合が上がる。</li>
+<li>モデルは 1 つ。学習で「何も見せない／途中まで見せる／ばらばらに見せる」を混ぜたので、どの時点からでも描ける。</li>
+</ul>
+<details><summary>Q. 先にたくさん描いておいて、分かった順位に合うものを選ぶ方が軽いのでは？</summary>
+<p>試して比べ済みで、描き直す方が良かった。全馬の順位がそろって合う展開は、先に描いた中にほとんど残らない。</p></details>
+<details><summary>Q. 描き直しの計算は間に合う？ユーザーが増えたら？</summary>
+<p>1 回数十ミリ秒（1 秒に十数回）。計算は各自の端末なので、人数が増えてもサーバーの負荷は増えない。スマホでの計測はまだ。</p></details>
+<details><summary>Q. STEP 03 の主役が勝つ確率でないのはなぜ？</summary>
+<p>売りは「何通りも描く・描き直す」こと。勝つ確率は、その読み取りの 1 つとして見せる。</p></details>
+</section>
+
+<!-- 8 -->
+<section id="c8">
+<h2>8. 評価：2 つの物差し <small>スライド STEP 04・付録</small></h2>
+<div class="key">順位の当たり具合は ST とほぼ同じ。展開の本物らしさは全段階で RaceWM が良い。物差しが見ているところが違う。</div>
+<div class="fig"><svg viewBox="0 0 800 250" role="img" aria-label="順位確率スコアは 1 頭ずつの着順の確率、本物らしさは 1 本の中のつじつま">
+  <rect x="10" y="10" width="380" height="230" rx="10" class="fS"/>
+  <text x="30" y="40" font-size="16" font-weight="700" class="tN">全頭の最終順位（順位確率スコア）</text>
+  <g class="fN"><rect x="40" y="130" width="14" height="30"/><rect x="58" y="80" width="14" height="80"/><rect x="76" y="100" width="14" height="60"/><rect x="94" y="140" width="14" height="20"/></g>
+  <g class="fO"><rect x="150" y="70" width="14" height="90"/><rect x="168" y="110" width="14" height="50"/><rect x="186" y="135" width="14" height="25"/><rect x="204" y="148" width="14" height="12"/></g>
+  <g class="fT"><rect x="260" y="148" width="14" height="12"/><rect x="278" y="130" width="14" height="30"/><rect x="296" y="95" width="14" height="65"/><rect x="314" y="85" width="14" height="75"/></g>
+  <line x1="130" y1="60" x2="130" y2="175" class="sL" stroke-width="2" stroke-dasharray="5 5"/><line x1="240" y1="60" x2="240" y2="175" class="sL" stroke-width="2" stroke-dasharray="5 5"/>
+  <g font-size="16" class="tO" text-anchor="middle"><text x="65" y="185">★</text><text x="157" y="185">★</text><text x="303" y="185">★</text></g>
+  <text x="200" y="215" text-anchor="middle" font-size="14">1 頭ずつ、何着に来るかの確率だけ</text>
+  <rect x="410" y="10" width="380" height="230" rx="10" class="fS"/>
+  <text x="430" y="40" font-size="16" font-weight="700" class="tN">展開の本物らしさ</text>
+  <path d="M450,72 V62 H740 V72" fill="none" class="sG" stroke-width="2"/><text x="595" y="56" text-anchor="middle" font-size="13">走破</text>
+  <rect x="450" y="78" width="190" height="34" rx="4" class="fN2"/><rect x="643" y="78" width="97" height="34" rx="4" class="fN"/>
+  <text x="545" y="100" text-anchor="middle" font-size="13" class="tW">前半</text><text x="691" y="100" text-anchor="middle" font-size="13" class="tW">上がり</text>
+  <circle cx="480" cy="155" r="20" class="fC sN" stroke-width="2.5"/><text x="480" y="160" text-anchor="middle" font-size="13" class="tN">4角</text>
+  <line x1="505" y1="155" x2="678" y2="155" class="ar sN" marker-end="url(#aN)"/>
+  <circle cx="705" cy="155" r="20" class="fN"/><text x="705" y="160" text-anchor="middle" font-size="13" class="tW">着順</text>
+  <text x="600" y="215" text-anchor="middle" font-size="14">1 本の展開の中で値どうしがかみ合うか</text>
+</svg></div>
+<ul>
+<li>差が付くのは「前半のタイム（＝走破−上がり）」「4 角と着順のつながり」など<b>つながりの項目</b>。走破タイムや上がりそのものはほぼ同じ。</li>
+<li>評価のやり方は結果を見る前に決めて固定。同じ 2024 年のレースで比べた。</li>
+</ul>
+<details><summary>Q. 順位確率スコア（RPS）ってどういう評価？</summary>
+<p>各馬の「1 着以内・2 着以内・3 着以内…の確率」と、実際の着順（そこから先は 1、手前は 0）の差の 2 乗を平均。低いほど良い。どの馬にも同じ確率を付ける予想より、どちらの手法もはっきり良い。</p></details>
+<details><summary>Q. 本物らしさはどういう式？何がずれると悪くなる？</summary>
+<p>1 レースで 32 本描き、13 項目それぞれの分布を作り、実際の値がどれだけ「よくある値」かを読む（自動運転の WOSAC を移植）。実際の値が、モデルがめったに描かない所にあると点が下がる。</p></details>
+<details><summary>Q. 1 着だけで比べるべき？全頭で比べるべき？</summary>
+<p>主は全頭。RaceWM は全馬の展開を出すので、物差しもその単位に。勝ち馬だけの物差し（対数損失）は脇に残す。勝ち馬だけだと ST がわずかに良い。</p></details>
+<details><summary>Q. 順位はほぼ同じなのに、本物らしさだけ差が付くのはなぜ？</summary>
+<p>順位の物差しは馬ごとの確率しか見ず、どちらも同じオッズ起点の出力部（⑦）に合わせているので揃いやすい。本物らしさは 1 本の中のつじつまを見るので、ST の「値ごとのサイコロ」の差が出る。</p></details>
+<details><summary>Q. 終盤（3・4 角）に ST が少し良くなるのはなぜ？</summary>
+<p>ST 自身の描き方（候補 6 本を勝者総取りで学習）が、残りの少ない終盤に「誰が勝つか」を鋭く当てるのに向いているため。勝ち馬の鋭さ（ST）と展開のつじつま（RaceWM）の交換条件。勝ち馬の出力部を本体と一緒に学習させても差は縮まらなかった。</p></details>
+
+<div class="key" style="margin-top:22px">描いた 32 本の中で、実際のレースの値が「よくある値」かを、13 項目で測る。自動運転の公式ベンチマーク WOSAC の作り方を競馬に移した。</div>
+
+<h3>8-1. 本物らしさ：何を誤差とみなすか</h3>
+<table>
+<tr><th>まとまり</th><th>項目</th></tr>
+<tr><td>馬ごとの走り</td><td>走破タイム、上がり、前半のタイム（走破−上がり）、コーナー間の順位変化、直線での順位変化</td></tr>
+<tr><td>馬どうし</td><td>前の馬との着差、前の馬を差したか、逃げ馬の着順、勝ち馬の位置、4 角と着順のつながり、位置と上がりのつながり</td></tr>
+<tr><td>隊列のばらつき</td><td>走破タイムのばらつき、上がりのばらつき</td></tr>
+</table>
+<p>実際の値が、モデルが<b>めったに描かない区間</b>に入ると点が下がる。外れの大きさではなく「その値をどれだけありうると見ていたか」を測る。</p>
+
+<h3>8-2. 本物らしさ：計算の流れと式</h3>
+<div class="fig"><svg viewBox="0 0 800 330" role="img" aria-label="本物らしさの計算の流れと、それぞれの式"><g font-size="14" text-anchor="middle"><rect x="10" y="130" width="120" height="70" rx="8" class="fN"/><text x="70" y="160" class="tW">32 本描く</text><text x="70" y="182" class="tW" font-size="12">1 レース・1 時点</text><line x1="134" y1="165" x2="166" y2="165" class="ar sN" marker-end="url(#aN)"/><rect x="172" y="110" width="250" height="110" rx="8" class="fS"/><rect x="190" y="180.4" width="24" height="19.599999999999998" rx="2" class="fN2"/><rect x="220" y="158.0" width="24" height="42.0" rx="2" class="fN2"/><rect x="250" y="127.2" width="24" height="72.8" rx="2" class="fN2"/><rect x="280" y="144.0" width="24" height="56.0" rx="2" class="fO"/><rect x="310" y="169.2" width="24" height="30.799999999999997" rx="2" class="fN2"/><rect x="340" y="186.0" width="24" height="14.0" rx="2" class="fN2"/><rect x="370" y="191.6" width="24" height="8.399999999999999" rx="2" class="fN2"/><line x1="186" y1="201" x2="404" y2="201" class="sG" stroke-width="1.5"/><text x="292" y="214" font-size="16" class="tO">▲</text><text x="330" y="238" font-size="12" class="tS">▲＝実際の値</text><line x1="426" y1="165" x2="458" y2="165" class="ar sN" marker-end="url(#aN)"/><g><circle cx="480" cy="165" r="9" class="fO" opacity="1"/><circle cx="502" cy="165" r="9" class="fO" opacity="0.7"/><circle cx="524" cy="165" r="9" class="fO" opacity="0.9"/><circle cx="546" cy="165" r="9" class="fO" opacity="0.6"/><text x="513" y="200" font-size="12" class="tS">馬ごとの p̂</text></g><line x1="572" y1="165" x2="604" y2="165" class="ar sN" marker-end="url(#aN)"/><rect x="610" y="130" width="90" height="70" rx="8" class="fO"/><text x="655" y="170" class="tW" font-weight="700">平均</text><line x1="702" y1="165" x2="730" y2="165" class="ar sN" marker-end="url(#aN)"/><text x="762" y="171" font-size="18" font-weight="700">m</text></g><foreignObject x="150" y="8" width="330" height="74"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><mover><mi>p</mi><mo>^</mo></mover><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>y</mi><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>=</mo><mfrac><mrow><mtext>区間の本数</mtext><mo>+</mo><mn>0.1</mn></mrow><mrow><mn>32</mn><mo>+</mo><mn>0.1</mn><mo>×</mo><mtext>区間数</mtext></mrow></mfrac></math></div></foreignObject><path d="M300,82 L291,145" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="291" cy="145" r="4" class="fO"/><foreignObject x="430" y="244" width="360" height="74"><div xmlns="http://www.w3.org/1999/xhtml" class="fx"><math><msub><mi>m</mi><mtext>項目</mtext></msub><mo>=</mo><mi>exp</mi><mo>(</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>log</mi><mspace width="0.2em"/><mover><mi>p</mi><mo>^</mo></mover><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" lspace="0" rspace="0">)</mo><mo>)</mo></math></div></foreignObject><path d="M600,244 L655,200" class="sO" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/><circle cx="655" cy="200" r="4" class="fO"/><text x="20" y="300" font-size="13" class="tS">13 項目の m を平均 → 全レースで平均 ＝ 本物らしさ</text></svg></div>
+<h3>8-3. 本物らしさの出どころ（WOSAC）と変えたところ</h3>
+<table>
+<tr><th></th><th>WOSAC（Montali ら, NeurIPS 2023）</th><th>今回</th></tr>
+<tr><td>対象</td><td>交通シミュレーターが描く車・歩行者の動き</td><td>RaceWM・ST が描くレース展開</td></tr>
+<tr><td>描く本数</td><td>32 本</td><td>32 本（×4 回で平均）</td></tr>
+<tr><td>点の付け方</td><td>項目ごとのヒストグラムの尤度、疑似カウント 0.1、exp(平均 log)</td><td>同じ</td></tr>
+<tr><td>項目</td><td>動き・相互作用・地図の 9 項目</td><td>走り・馬どうし・ばらつきの 13 項目（地図はない）</td></tr>
+<tr><td>まとめ方</td><td>重み付き（衝突・はみ出しは 2 倍）</td><td>単純平均（安全の理由がない）</td></tr>
+</table>
+
+<h3>8-4. 今回使うのは妥当か</h3>
+<div class="fig"><svg viewBox="0 0 800 150" role="img" aria-label="物差しの点検：実際の複製が最上位、でたらめと止まったままに勝つ">
+  <g font-size="13">
+    <rect x="10" y="20" width="380" height="115" rx="10" class="fS"/>
+    <text x="30" y="46" font-size="15" font-weight="700" class="tN">✓ 事前に決めた点検はすべて通過</text>
+    <text x="30" y="72">・実際のレースの複製が最高点</text>
+    <text x="30" y="94">・生成モデルはでたらめ・止まったままに勝つ</text>
+    <text x="30" y="116">・同条件の別の実レースもでたらめに勝つ</text>
+    <rect x="410" y="20" width="380" height="115" rx="10" class="fS"/>
+    <text x="430" y="46" font-size="15" font-weight="700" class="tN">✓ 設定を変えても向きは同じ</text>
+    <text x="430" y="72">・対数の形・区間を半分・128 本まとめ</text>
+    <text x="430" y="94">・項目を 1 つずつ抜いても RaceWM が上</text>
+    <text x="430" y="116">・芝ダ×距離の全区分で RaceWM が上</text>
+  </g>
+</svg></div>
+<p><b>注意して言うこと</b></p>
+<ul>
+<li><b>項目は私たちが決めた</b>：WOSAC のように外部で合意された項目ではない。点を見る前に決めて固定し、1 つずつ抜く点検もしたが、差は「前半のタイム」に多く集まる。</li>
+<li><b>学習の物差しと近い</b>：RaceWM はレース全体のつながりで学習し、本物らしさもつながりを見る。ST は論文どおりの損失で学習。どちらも「自分の本来の学習法」で比べている、と明記する。</li>
+<li><b>点の絶対値は読めない</b>：32 本のヒストグラムで 1 つの実際の値を当てる確率なので、もともと低い（天井近くにはならない）。「何%再現」とは言えず、手法どうしの比較にだけ使う。</li>
+<li><b>1 レース 1 値の項目の癖</b>：最もありそうな区間に全部賭ける描き方が得をする。対数の形でも順位は同じだった。</li>
+<li><b>2024 年は開発年</b>：確証は未使用の 2026 年前半で一度だけ確かめる。</li>
+</ul>
+<details><summary>Q. WOSAC はどれくらい権威ある？</summary>
+<p>Waymo が主催する自動運転のシミュレーション競技の公式評価法で、NeurIPS 2023 の Datasets and Benchmarks に論文が載っている。複数主体の「描いた動きの分布が現実らしいか」を測る代表的な方法。</p></details>
+<details><summary>Q. 順位確率スコアや勝ち馬の対数損失だけでは足りない？</summary>
+<p>どちらも 1 頭ずつの確率しか見ない（この章の上）。ゲームでは描いた 1 本がそのままレースになるので、1 本の中のつじつまを見る物差しが要る。そこで両方を並べて報告している。</p></details>
+</section>
+
+<!-- 9 -->
+<section id="c9">
+<h2>9. ゲームでの使い方と今後 <small>スライド 今後の方針</small></h2>
+<div class="key">プレイヤーが動く → 順位が変わる → RaceWM が先を描き直す → AI の馬が作戦を変える。</div>
+<div class="fig"><svg viewBox="0 0 800 232" role="img" aria-label="プレイヤー操作から描き直し、AI の作戦変更までの循環">
+  <g font-size="15" text-anchor="middle" font-weight="700">
+    <rect x="300" y="10" width="200" height="50" rx="25" class="fO"/><text x="400" y="41" class="tW">プレイヤーが操作</text>
+    <rect x="560" y="91" width="200" height="50" rx="25" class="fS"/><text x="660" y="122">全馬の順位が変わる</text>
+    <rect x="300" y="172" width="200" height="50" rx="25" class="fN"/><text x="400" y="203" class="tW">RaceWM が描き直す</text>
+    <rect x="40" y="91" width="200" height="50" rx="25" class="fS"/><text x="140" y="122">AI の馬が作戦を変える</text>
+  </g>
+  <g class="ar sN">
+    <path d="M505,35 C600,35 660,50 660,84" marker-end="url(#aN)"/>
+    <path d="M660,146 C660,185 600,197 507,197" marker-end="url(#aN)"/>
+    <path d="M295,197 C200,197 140,185 140,147" marker-end="url(#aN)"/>
+    <path d="M140,85 C140,50 200,35 294,35" marker-end="url(#aN)"/>
+  </g>
+</svg></div>
+<table>
+<tr><th></th><th>今（中間発表）</th><th>最終発表まで</th></tr>
+<tr><td>描き直すとき</td><td>コーナーごと</td><td><b>プレイヤーが何か操作した瞬間</b></td></tr>
+<tr><td>モデル</td><td>本物らしさで一番、順位は ST に僅差</td><td>両方で一番</td></tr>
+<tr><td>評価</td><td>2021–23 学習 → 2024 評価、相手は ST</td><td>2021–25 学習 → 未使用の 2026 前半で一度だけ、相手に最新手法</td></tr>
+</table>
+<details><summary>Q. ゲームの「コーナー」は実際のコースのコーナー？</summary><p>今は、ゴールから 1750・1400・1000・620m 手前の決まった地点を 1〜4 角として扱っている（実際のコースのコーナー位置とは少しずれる）。そこで全馬の順位を RaceWM に渡して描き直す。</p></details>
+<details><summary>Q. 操作の瞬間ごとに描き直して、計算は間に合う？</summary>
+<p>1 回の描き直しは数十ミリ秒。1 回の計算で全体を描くので、操作のたびでも間に合う（付録「操作にその場で反応できる速さ」）。ただし ST も 1 回の計算の手法で、速さで勝っているわけではない。</p></details>
+</section>
+
+<!-- 10 -->
+<section id="c10">
+<h2>10. 用語ミニ辞典</h2>
+<table>
+<tr><th>上がり</th><td>最後の 600m のタイム。小さいほど末脚が速い。</td></tr>
+<tr><th>走破タイム</th><td>スタートからゴールまでのタイム。＝前半＋上がり。</td></tr>
+<tr><th>通過順位</th><td>各コーナーを何番手で回ったか。</td></tr>
+<tr><th>軌跡</th><td>主体（ここでは馬）の、時間ごとの位置の並び。</td></tr>
+<tr><th>生成モデル</th><td>答えを 1 つでなく、ありうる結果を何通りも描くモデル。</td></tr>
+<tr><th>ST</th><td>Scene Transformer。自動運転の代表的な軌跡予測。比較相手。</td></tr>
+<tr><th>順位確率スコア</th><td>全頭の着順の確率の当たり具合。低いほど良い。</td></tr>
+<tr><th>本物らしさ</th><td>描いた展開が実際のレースにどれだけ似ているか。高いほど良い。</td></tr>
+<tr><th>温度</th><td>確率の鋭さを調整するつまみ。</td></tr>
+</table>
+</section>
+
+<p class="small">更新の記録：2026-11-25 初版（要点）／同日 図解版に作り直し（部品①〜⑧、質問を各章に組み込み、文字を減らした）／同日 7-5〜7-9（入力の作り方、隠し方、勝つ確率の出力部と温度、選び直し、シードと戻し方）を追加／同日 深掘り 2 章（数式・Transformer の設計、本物らしさの仕組みと妥当性）を追加。／同日 前から読める章立てに再構成（入力・仕組み・学習・確率・比較・評価・利用の順）。</p>
+</main>
+</body>
+</html>
